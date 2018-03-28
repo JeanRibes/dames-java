@@ -8,7 +8,7 @@ public class Pion{
 		this.coordX = coordX;
 		this.coordY = coordY;
 		this.TypePion = TypePion;
-		this.pions = new Pion[20]; // 20 pions par joueur		
+		this.TabPions = new Pion[20]; // 20 pions par joueur		
 	}
 	
 	
@@ -27,7 +27,8 @@ public class Pion{
 	public void Bouge(int TypePion){
 
 
-	// devra faire x déplacements * type pion ? Possibilité utiliser reste de division eucl
+	// devra faire x déplacements. Si pion type = 2, déplacement toute diago
+	// type pion ? Possibilité utiliser reste de division eucl
 		
 	}
 	
