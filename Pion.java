@@ -7,12 +7,21 @@ public class Pion{
 	public Pion(int coordX, int coordY, int TypePion){
 		this.coordX = coordX;
 		this.coordY = coordY;
-		this.TypePion = TypePion;
-		
-		
-		
+		this.TypePion = TypePion;		
 	}
 	
+	
+	public int getX(){
+		return coordX;		
+	}
+	
+	public int getY(){
+		return coordY;
+	}
+	
+	public int getTypePion(){
+		return TypePion;
+	}
 	
 	
 }
