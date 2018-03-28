@@ -23,5 +23,17 @@ public class Pion{
 		return TypePion;
 	}
 	
+	public void Bouge(int TypePion){
+		
+		
+	}
+	
+	public void Mange(Pion cible){
+		this.coordX = cible.coordX;
+		this.coordY = cible.coordY;
+		cible.TypePion = 0;
+		
+	}
+	
 	
 }
