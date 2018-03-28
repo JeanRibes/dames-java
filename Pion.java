@@ -1,14 +1,13 @@
 public class Pion{
 	private int coordX;
 	private int coordY;
-	private int TypePion;
-	private Pion[] TabPions; // private => Need des get
+	private int TypePion;		
+
 	
 	public Pion(int coordX, int coordY, int TypePion){
 		this.coordX = coordX;
 		this.coordY = coordY;
 		this.TypePion = TypePion;
-		this.TabPions = new Pion[20]; // 20 pions par joueur		
 	}
 	
 	
