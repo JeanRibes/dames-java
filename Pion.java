@@ -19,6 +19,14 @@ public class Pion{
 		return coordY;
 	}
 	
+	public void setX(int NewX){
+		coordX = NewX;
+	}
+	
+	public void setY(int NewY){
+		coordY = NewY;
+	}
+
 	public int getTypePion(){
 		return TypePion;
 	}
