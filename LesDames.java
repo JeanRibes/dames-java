@@ -6,16 +6,19 @@ public class LesDames {
         //Pion joueur1[] = new Pion[20];
         //Pion joueur2[] = new Pion[20];
         Plateau plateau = new Plateau(10);
-        plateau.initialiser();
         plateau.afficherPlateau();
+        Pion[] pions = RemplirPlateau(plateau, 20, true);
     }
 
 
-    public static Pion[] RemplirPlateau(int taille, int nbPion, boolean joueur1) {
+    public static Pion[] RemplirPlateau(Plateau plateau, int nbPion, boolean joueur1) {
         Pion tableauPions[] = new Pion[nbPion];
-        for (int x = 0; x <= 10; x++) {
-            for (int y = 0; y <= 10; y++) {
-
+        int i = 0;
+        for (int y = 0; y < plateau.taille; y++) {
+            for (int x = 0; x < plateau.taille; x++) {
+                if (i < nbPion && plateau.getPlateau()[y][x].isBlanc())
+                    tableauPions[i] = new Pion(x, y, 1);
+                i++;
             }
         }
         return tableauPions;
