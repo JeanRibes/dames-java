@@ -19,10 +19,15 @@ class Plateau {
         System.out.println("--------------------");
         for (Case[] ligne : this.cases) {
             for (Case cetteCase : ligne) {
-                if (cetteCase.isBlanc())
-                    System.out.print("| ");
-                else
-                    System.out.print("|@");
+                if(cetteCase.hasPion()){
+                    System.out.print("P");
+                }
+                else {
+                    if (cetteCase.isBlanc())
+                        System.out.print("| ");
+                    else
+                        System.out.print("|@");
+                }
             }
             System.out.println("|");
             System.out.println("--------------------");
@@ -31,6 +36,12 @@ class Plateau {
 
     public Case[][] getPlateau() {
         return this.cases;
+    }
+
+    public void tout(Pion[] pions){
+        for (Pion pion: pions){
+            this.cases[pion.getY()][pion.getX()].setPion(pion);
+        }
     }
 
 }

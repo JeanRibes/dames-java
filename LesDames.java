@@ -6,8 +6,9 @@ public class LesDames {
         //Pion joueur1[] = new Pion[20];
         //Pion joueur2[] = new Pion[20];
         Plateau plateau = new Plateau(10);
-        plateau.afficherPlateau();
         Pion[] pions = RemplirPlateau(plateau, 20, true);
+        plateau.tout(pions);
+        plateau.afficherPlateau();
     }
 
 
