@@ -1,4 +1,4 @@
-@SuppressWarnings("ALL")
+//@SuppressWarnings("ALL")
 public class Case {
     public boolean blanc;
     public Pion pion;

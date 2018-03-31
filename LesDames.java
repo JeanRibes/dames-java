@@ -1,17 +1,32 @@
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
+import java.io.IOException;
 
 public class LesDames {
     /*
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10);
         Pion[] pions = RemplirPlateau(plateau, 20);
         plateau.update(pions);
-        plateau.afficherPlateau();
+        plateau.afficherPlateau(pions[pions.length-1].getPos());
+        Affichage af = new Affichage(); //permet de tester les flèches, et affiche les codes pour les autres touches
+        //af.test();
+
+        Input input = new Input();
+        String key = input.getKeyCode();
+        while (!key.equals("ENTER")){
+            key = input.getKeyCode();
+            int[] posCurseur = input.getPos(plateau.taille, key);
+            pions[pions.length-1].bouge(posCurseur, plateau.taille);
+            plateau.update(pions);
+            plateau.afficherPlateau(posCurseur);
+        }
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
-        Pion tableauPions[] = new Pion[2 * nbPion];
+        Pion tableauPions[] = new Pion[1+(2 * nbPion)];
         int i = 0;
         for (int y = 0; y < plateau.taille; y++) {
             for (int x = 0; x < plateau.taille; x++) {
@@ -29,6 +44,8 @@ public class LesDames {
                 }
             }
         }
+        tableauPions[i] = new Pion(0,0, "curseur", false);
+        tableauPions[i].makeCurseur();
         return tableauPions;
     }
 }

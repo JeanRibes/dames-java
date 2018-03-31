@@ -22,12 +22,15 @@ class Plateau {
         int a = 1;
     }
 
-    public void afficherPlateau() {
-        System.out.println("-----------------------------------------");
+    public void afficherPlateau(int[] posCurseur) {
+            System.out.println("-----------------------------------------");
         for (Case[] ligne : this.cases) {
             for (Case cetteCase : ligne) {
                 if (cetteCase.hasPion()) {
-                    System.out.print("|░"+cetteCase.pion+"░");
+                    if(cetteCase.pion.getX() == posCurseur[0] && cetteCase.pion.getY() == posCurseur[1])
+                        System.out.print("|C"+cetteCase.pion+"C");
+                    else
+                        System.out.print("|░"+cetteCase.pion+"░");
                 } else {
                     if (cetteCase.isBlanc())
                         System.out.print("|▉▉▉");
@@ -45,10 +48,15 @@ class Plateau {
     }
 
     public void update(Pion[] pions) {
+        for (Case[] ligne: this.cases) {
+            for(Case cetteCase: ligne)
+                cetteCase.pion = null;
+        }
         for (int i = 0; i < pions.length; i++) {
             Pion a = pions[i];
             this.cases[pions[i].getY()][pions[i].getX()].setPion(pions[i]);
         }
     }
+
 
 }
