@@ -61,7 +61,7 @@ public class Pion {
 
     public String toString() {
         if (this.typePion.equals("mort")) {
-            return " ";
+            return "x";
         } else {
             if (this.typePion.equals("pion")) {
                 if (blanc)
@@ -69,7 +69,7 @@ public class Pion {
                 else
                     return "◉";
             }
-            else {
+            else { //une Dame
                 if (blanc)
                     return "▢";
                 else

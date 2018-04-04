@@ -21,10 +21,26 @@ class Plateau {
         }
         int a = 1;
     }
-
     public void afficherPlateau(int[] posCurseur) {
+        System.out.println("-----------------------------------------");
+        for (int y=0;y<this.cases.length; y++) {
+            for(int x=0; x<this.cases[y].length; x++) {
+                Case cetteCase = this.cases[y][x];
+                if(x == posCurseur[0] && y == posCurseur[1]) { //le curseur est sur la case
+                    System.out.print("|C"+cetteCase+"C");
+                }
+                else{
+                    if(cetteCase.isBlanc())
+                        System.out.print("|░"+cetteCase+"░");
+                    else
+                        System.out.print("|   ");
+
+                }
+            }
+            System.out.println("|");
             System.out.println("-----------------------------------------");
-        for (Case[] ligne : this.cases) {
+        }
+        /*for (Case[] ligne : this.cases) {
             for (Case cetteCase : ligne) {
                 if (cetteCase.hasPion()) {
                     if(cetteCase.pion.getX() == posCurseur[0] && cetteCase.pion.getY() == posCurseur[1])
@@ -40,7 +56,7 @@ class Plateau {
             }
             System.out.println("|");
             System.out.println("-----------------------------------------");
-        }
+        }*/
     }
 
     public Case[][] getPlateau() {

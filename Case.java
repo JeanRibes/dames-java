@@ -28,19 +28,16 @@ public class Case {
             return false;
         }
     }
-    //@Override
-    //public String toString() {
-    //	try {
-    //		if (this.pion.getTypePion()>0){
-    //			return "P";
-    //		}
-    //	}
-    //	catch (Exception e) {
-    //		if (this.blanc)
-    //			return "_";
-    //		else
-    //			return "@";
-    //	}
-    //	return ".";
-    //}
+
+    public String toString() {
+        try {
+            this.pion.getX();
+            return this.pion.toString();
+        } catch (Exception e) {
+            if (this.blanc)
+                return "░";
+            else
+                return " ";
+        }
+    }
 }
