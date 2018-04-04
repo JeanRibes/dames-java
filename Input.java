@@ -64,7 +64,7 @@ public class Input {
             return "ERROR";
         }
     }
-    public int[] getPos(int taille, String key){
+    public int[] updatePos(int taille, String key){
         switch (key){
             case "UP":
                 if (this.curY<taille-1)
@@ -84,6 +84,18 @@ public class Input {
                 break;
         }
         int[] pos = {this.curX, this.curY};
+        return pos;
+    }
+
+    public int[] getPos(Plateau plateau) {
+        String key = this.getKeyCode();
+        int[] pos = {this.curX, this.curY};
+        while (!key.equals("ENTER")) {
+            pos = this.updatePos(plateau.taille, key);
+            plateau.afficherPlateau(pos);
+            key = this.getKeyCode();
+        }
+
         System.out.println(curX+" "+curY);
         return pos;
     }

@@ -17,14 +17,8 @@ public class LesDames {
         //af.test();
 
         Input input = new Input();
-        String key = input.getKeyCode();
-        while (!key.equals("ENTER")){
-            key = input.getKeyCode();
-            int[] posCurseur = input.getPos(plateau.taille, key);
-            //pions[pions.length-1].bouge(posCurseur, plateau.taille);
-            plateau.update(pions);
-            plateau.afficherPlateau(posCurseur);
-        }
+        int[] pos = input.getPos(plateau);
+        System.out.println("Position: x="+pos[0]+" y="+pos[1]);
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
