@@ -1,0 +1,101 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\usepackage[utf8]{inputenc}   
+\usepackage[frenchb]{babel} 
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Projet de groupe :\\ Jeu de Dames} % Title
+
+\author{Jean \textsc{Ribes}\\Bastian \textsc{NORROY}\\Aldwin \textsc{AUBRY}} % Author name
+
+\date{} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+\vfill
+%\begin{center}
+%\begin{tabular}{l r}
+%Date Performed: & January 1, 2012 \\ % Date the experiment was performed
+%Partners: & James Smith \\ % Partner names
+%& Mary Smith \\
+%Instructor: & Professor Smith % Instructor/supervisor
+%\end{tabular}
+%\end{center}
+
+% If you wish to include an abstract, uncomment the lines below
+\begin{abstract}
+Notre projet consiste à produire un jeu de dames sous Java en utilisant les notions acquises depuis le début de l'année. A savoir, l'usage de tableaux 2D, d'objets, d'affichage.
+\end{abstract}
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+\vfill
+\section{Objectifs}
+
+Nos objectifs sont les suivants :
+\begin{itemize}
+\item affichage du tour, quel joueur doit jouer\,;
+\item vérifier le nombre d'actions possibles\,;
+\item auto-jouer les coups obligatoire quand il n'y a pas d'autres choix\,;
+\item affichage des coups permis (quels pions manger, où aller)\,;
+\item Sélectionner un pion à l'aide d'un curseur\,;
+\item calculer des scores.
+\end{itemize}
+\begin{center}==== POUR APRÈS ===\end{center}
+\begin{itemize}
+\item charger les objets dans du JSON et les envoyer à un serveur pour le jeu en réseau\,;
+\item décoder les objets depuis du JSON reçu du serveur API\,
+\item Intégrer une IA (bien op pour que tu perdes d'office).
+\end{itemize}
+\newpage
+%\begin{center}\ce{==== POUR APRÈS ===}\end{center}
+
+% If you have more than one objective, uncomment the below:
+%\begin{description}
+%\item[First Objective] \hfill \\
+%Objective 1 text
+%\item[Second Objective] \hfill \\
+%Objective 2 text
+%\end{description}
+
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
