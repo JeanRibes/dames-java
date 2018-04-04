@@ -42,14 +42,11 @@ public class Pion {
         this.typePion = typePion;
     }
 
-    public void bouge(int[] newpos, int taille) {
-        if(newpos.length == 2) {
-            if (newpos[0] >=0 && newpos[0] <taille && newpos[1] >=0 && newpos[1] < taille) {
-                this.coordX = newpos[0];
-                this.coordY = newpos[1];
-            }
-        }
-        else
+    public void bouge(int[] newpos) {
+        if (newpos.length == 2) {
+            this.coordX = newpos[0];
+            this.coordY = newpos[1];
+        } else
             System.out.println("Il faut une coordonnée X et Y pour bouger");
     }
 
@@ -68,8 +65,7 @@ public class Pion {
                     return "◯";
                 else
                     return "◉";
-            }
-            else { //une Dame
+            } else { //une Dame
                 if (blanc)
                     return "▢";
                 else
@@ -78,15 +74,10 @@ public class Pion {
         }
     }
 
-    public void makeCurseur() {
-        this.curseur = true;
-        blanc = true;
-        typePion = "curseur";
-    }
     public int[] getPos() {
         int[] pos = new int[2];
-        pos[0]=this.coordX;
-        pos[1]=this.coordY;
+        pos[0] = this.coordX;
+        pos[1] = this.coordY;
         return pos;
     }
 }

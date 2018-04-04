@@ -40,23 +40,20 @@ class Plateau {
             System.out.println("|");
             System.out.println("-----------------------------------------");
         }
-        /*for (Case[] ligne : this.cases) {
-            for (Case cetteCase : ligne) {
-                if (cetteCase.hasPion()) {
-                    if(cetteCase.pion.getX() == posCurseur[0] && cetteCase.pion.getY() == posCurseur[1])
-                        System.out.print("|C"+cetteCase.pion+"C");
-                    else
-                        System.out.print("|░"+cetteCase.pion+"░");
-                } else {
-                    if (cetteCase.isBlanc())
-                        System.out.print("|▉▉▉");
-                    else
-                        System.out.print("|   ");
-                }
+    }
+    public void afficher() {
+        System.out.println("-----------------------------------------");
+        for (Case[] aCase : this.cases) {
+            for (int x = 0; x < aCase.length; x++) {
+                Case cetteCase = aCase[x];
+                if (cetteCase.isBlanc())
+                    System.out.print("|░" + cetteCase + "░");
+                else
+                    System.out.print("|   ");
             }
             System.out.println("|");
             System.out.println("-----------------------------------------");
-        }*/
+        }
     }
 
     public Case[][] getPlateau() {
@@ -69,7 +66,6 @@ class Plateau {
                 cetteCase.pion = null;
         }
         for (int i = 0; i < pions.length; i++) {
-            Pion a = pions[i];
             this.cases[pions[i].getY()][pions[i].getX()].setPion(pions[i]);
         }
     }

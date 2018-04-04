@@ -1,5 +1,3 @@
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
 import java.io.IOException;
 
 public class LesDames {
@@ -7,18 +5,20 @@ public class LesDames {
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
      */
     public static void main(String[] args) throws IOException {
-        Plateau plateau = new Plateau(10);
+        Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
         Pion[] pions = RemplirPlateau(plateau, 20);
         plateau.update(pions);
-        //plateau.afficherPlateau(pions[pions.length-1].getPos());
-        int[] initpos = {0,0};
-        plateau.afficherPlateau(initpos);
-        Affichage af = new Affichage(); //permet de tester les flèches, et affiche les codes pour les autres touches
-        //af.test();
 
         Input input = new Input();
-        int[] pos = input.getPos(plateau);
+        int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         System.out.println("Position: x="+pos[0]+" y="+pos[1]);
+
+        pions[0].bouge(input.getPos(plateau)); //si on le met sur une case noire il sera invisible
+
+        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        plateau.afficher(); // affiche le plateau actuel, sans le curseur
+
+
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
@@ -41,8 +41,6 @@ public class LesDames {
                 }
             }
         }
-        //tableauPions[i] = new Pion(0,0, "curseur", false);
-        //tableauPions[i].makeCurseur();
         return tableauPions;
     }
 }
