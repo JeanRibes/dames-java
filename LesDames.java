@@ -7,18 +7,19 @@ public class LesDames {
     public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
         Pion[] pions = RemplirPlateau(plateau, 20);
-        plateau.update(pions);
+
+        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        //plateau.afficher(); // affiche le plateau actuel, sans le curseur
 
         Input input = new Input();
         int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
-        pions[0].bouge(input.getPos(plateau)); //si on le met sur une case noire il sera invisible
-
-        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
-        plateau.afficher(); // affiche le plateau actuel, sans le curseur
+        pions[0].bouge(input.getPos(plateau)); //exemple pour bouger un pion
+        plateau.afficher(pions);              //si on le met sur une case noire il sera invisible
 
 
+        input.close(); //à mettre TOUT à la fin
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {

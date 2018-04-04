@@ -27,6 +27,10 @@ public class Input {
         this.reader.close();
         this.terminal.close();
     }
+    public void reset() { //remet les coordonnées du curseur à 0; par défaut il se souvient de sa précédente séléction
+        this.curX = 0;
+        this.curY = 0;
+    }
 
     public String getKeyCode() {
         try {
@@ -88,8 +92,9 @@ public class Input {
     }
 
     public int[] getPos(Plateau plateau) {
+        int[] pos = {this.curX, this.curY}; //
+        plateau.afficherPlateau(pos);
         String key = this.getKeyCode();
-        int[] pos = {this.curX, this.curY};
         while (!key.equals("ENTER")) {
             pos = this.updatePos(plateau.taille, key);
             plateau.afficherPlateau(pos);

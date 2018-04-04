@@ -41,7 +41,8 @@ class Plateau {
             System.out.println("-----------------------------------------");
         }
     }
-    public void afficher() {
+    public void afficher(Pion[] pions) {
+        this.update(pions);
         System.out.println("-----------------------------------------");
         for (Case[] aCase : this.cases) {
             for (int x = 0; x < aCase.length; x++) {
