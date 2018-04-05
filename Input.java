@@ -17,6 +17,10 @@ public class Input {
                 .jna(true)
                 .system(true)
                 .build();
+        System.out.println("Pour séléctionner un pion, dux méthodes sont disponibles :");
+        System.out.println("* flèches du clavier puis entrée");
+        System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour se déplacer et Esapce pour valider");
+        System.out.println("    et entre chaque touche il faudra appuyer sur enter");
 
 // raw mode means we get keypresses rather than line buffered input
         this.terminal.enterRawMode();
@@ -35,7 +39,7 @@ public class Input {
     public String getKeyCode() {
         try {
             int code = reader.read();
-            while (code != 13) { //32=SPACE
+            while (code != 13 || code !=32) { //32=SPACE, 13=ENTER
                 switch (code) {
                     case 65:
                         return "DOWN";
@@ -55,9 +59,12 @@ public class Input {
                         return "UP";
                     case 27: break; //pour enlever les codes envoyés avant les flèches (sur linux)
                     case 91: break;
-                    case 32: return "SPACE";
+                    case 10: break;
+                    case 32:
+                        return "ENTER";
                     default:
-                        System.out.println("Use arrow keys >");
+                        System.out.println("Espace ou Entrée pour valider, et pour se déplacer");
+                        System.out.println("flèches ou ZQSD >");
 
                 }
                 code = reader.read();

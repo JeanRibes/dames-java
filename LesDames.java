@@ -12,8 +12,8 @@ public class LesDames {
         //plateau.afficher(); // affiche le plateau actuel, sans le curseur
 
         Input input = new Input();
-        int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
-        System.out.println("Position: x="+pos[0]+" y="+pos[1]);
+        //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
+        //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
         pions[0].bouge(input.getPos(plateau)); //exemple pour bouger un pion
         plateau.afficher(pions);              //si on le met sur une case noire il sera invisible
