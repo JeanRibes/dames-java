@@ -2,7 +2,7 @@
 Jeu de dames en Java, interface terminal
 # comment compiler ?
 il faut la bibliothèque Jline
-
+et GSON http://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
 pour compiler, faire ``javac -cp .:/dossier/jline.jar LesDames.java``
 
 pour exécuter, ``java -cp .:/dossier/jline.jar LesDames``

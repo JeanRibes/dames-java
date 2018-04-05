@@ -1,5 +1,7 @@
 import java.io.IOException;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.net.HttpURLConnection;
 public class LesDames {
     /*
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
@@ -11,7 +13,10 @@ public class LesDames {
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         //plateau.afficher(); // affiche le plateau actuel, sans le curseur
 
-        Input input = new Input();
+        Rest api = new Rest("https://ribes.me/", "haha");
+        api.test(plateau);
+
+        /*Input input = new Input();
         int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
@@ -19,7 +24,7 @@ public class LesDames {
         plateau.afficher(pions);              //si on le met sur une case noire il sera invisible
 
 
-        input.close(); //à mettre TOUT à la fin
+        input.close(); //à mettre TOUT à la fin*/
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
