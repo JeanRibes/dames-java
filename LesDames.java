@@ -9,12 +9,17 @@ public class LesDames {
     public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
         Pion[] pions = RemplirPlateau(plateau, 20);
-
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
-        //plateau.afficher(); // affiche le plateau actuel, sans le curseur
 
-        Rest api = new Rest("https://ribes.me/", "haha");
-        api.test(plateau);
+        plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
+
+        Rest api = new Rest("http://localhost:8000", "3c5b6eb01d4e24b08bc7562cbaff5472034ebbc7");
+        //api.test(plateau);
+        api.asyncPost(plateau);
+        System.out.println("GET maintenant");
+        Plateau p2 = api.get();
+        int[] initpos = {0,0};
+        p2.afficherPlateau(initpos);
 
         /*Input input = new Input();
         int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position

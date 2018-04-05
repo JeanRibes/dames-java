@@ -4,6 +4,8 @@ import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.reflect.ParameterizedType;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,12 +20,13 @@ public class Rest {
     public Gson gson;
 
     public Rest(String url, String token) {
-        this.server =url;
+        this.server = url;
         this.token = token;
         this.builder = new GsonBuilder();
         this.gson = this.builder.create();
     }
-    public void test(Plateau plateau){
+
+    public void test(Plateau plateau) {
         String serialized = gson.toJson(plateau);
         Plateau deserialized = gson.fromJson(serialized, Plateau.class);
         String finale = gson.toJson(serialized);
@@ -36,22 +39,95 @@ public class Rest {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (myURLConnection.getInputStream())));
+
+            String output;
+            StringBuilder receivedBuilder = new StringBuilder();
+            while ((output = br.readLine()) != null) {
+                receivedBuilder.append(output);
+            }
+            String received = receivedBuilder.toString();
+            System.out.println(received);
+            UUID u = gson.fromJson(received, UUID.class);
+            System.out.println(u);
+        } catch (MalformedURLException e) {
+            System.out.println("URL incorrecte");
+        } catch (IOException e) {
+            System.out.println("Connection échouée");
+        }
+    }
+
+    public Plateau get() {
+        try {
+            URL myURL = new URL(server + "/dames/sync/?format=json");
+            URLConnection conn = myURL.openConnection();
+            conn.setRequestProperty("Authorization", "Token " + this.token);
+            conn.connect();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
             String received = "";
             String output;
             while ((output = br.readLine()) != null) {
                 received += output;
-                //System.out.println(output);
             }
-            System.out.println(received);
-            UUID u = gson.fromJson(received, UUID.class);
-            System.out.println(u);
-        }
-        catch (MalformedURLException e) {
+            System.out.println("GOT :"+received);
+            return gson.fromJson(received, Plateau.class);
+        } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");
-        }
-        catch (IOException e) {
+            return null;
+        } catch (IOException e) {
             System.out.println("Connection échouée");
+            return null;
         }
+    }
+
+    public void post(Plateau plateau) {
+        try {
+
+            URL url = new URL(server + "/dames/sync/?format=json");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Token " + this.token);
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            //String input = "{\"qty\":100,\"name\":\"iPad 4\"}"
+            String input = gson.toJson(plateau);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println("POST res:"+output);
+            }
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            System.out.println("URL incorrecte");
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            System.out.println("Connection échouée");
+            e.printStackTrace();
+        }
+
+    }
+    public void asyncPost(Plateau plateau) {
+        new Thread(() -> {
+            post(plateau);
+            System.out.println("POST fini");
+            return; // to stop the thread
+        }).start();
     }
 }
 
