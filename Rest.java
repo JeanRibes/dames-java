@@ -56,7 +56,7 @@ public class Rest {
         }
     }
 
-    public Plateau get() {
+    public Pion[] get() {
         try {
             URL myURL = new URL(server + "/dames/sync/?format=json");
             URLConnection conn = myURL.openConnection();
@@ -71,7 +71,7 @@ public class Rest {
                 received += output;
             }
             System.out.println("GOT :"+received);
-            return gson.fromJson(received, Plateau.class);
+            return gson.fromJson(received, Pion[].class);
         } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");
             return null;
@@ -81,9 +81,8 @@ public class Rest {
         }
     }
 
-    public void post(Plateau plateau) {
+    public void post(Pion[] pions) {
         try {
-
             URL url = new URL(server + "/dames/sync/?format=json");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -91,8 +90,7 @@ public class Rest {
             conn.setRequestProperty("Authorization", "Token " + this.token);
             conn.setRequestProperty("Content-Type", "application/json");
 
-            //String input = "{\"qty\":100,\"name\":\"iPad 4\"}"
-            String input = gson.toJson(plateau);
+            String input = gson.toJson(pions);
 
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
@@ -122,9 +120,10 @@ public class Rest {
         }
 
     }
-    public void asyncPost(Plateau plateau) {
+
+    public void asyncPost(Pion[] pions) {
         new Thread(() -> {
-            post(plateau);
+            post(pions);
             System.out.println("POST fini");
             return; // to stop the thread
         }).start();
