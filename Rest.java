@@ -65,13 +65,13 @@ public class Rest {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
-            String received = "";
+            StringBuilder received = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {
-                received += output;
+                received.append(output);
             }
             System.out.println("GOT :"+received);
-            return gson.fromJson(received, Pion[].class);
+            return gson.fromJson(received.toString(), Pion[].class);
         } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");
             return null;

@@ -1,7 +1,4 @@
 import java.io.IOException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.net.HttpURLConnection;
 public class LesDames {
     /*
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
@@ -10,24 +7,27 @@ public class LesDames {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
         Pion[] pions = RemplirPlateau(plateau, 20);
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        System.out.println("Lancement...");
+        Rest api = new Rest("https://api.ribes.me", "8d87985af8599b5a519f467742ec978a50bf93b3"); //crée une connection
 
-        Rest api = new Rest("http://localhost:8000", "3c5b6eb01d4e24b08bc7562cbaff5472034ebbc7");
-
-        api.asyncPost(pions); //envoie les pions au serveur
+        //api.asyncPost(pions); //envoie les pions au serveur de manière asynchrone
+        api.asyncPost(RemplirPlateau(plateau, 10));
         plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
         System.out.println("GET maintenant");
-        Pion[] nouveauxPions = api.get();
-        plateau.afficher(nouveauxPions);
+        Pion[] nouveauxPions = api.get(); // reçoit les pions depuis le serveur
 
-        /*Input input = new Input();
+        //api.post(nouveauxPions); //envoie les pions de manière synchrone
+
+        Input input = new Input();
         int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
         pions[0].bouge(input.getPos(plateau)); //exemple pour bouger un pion
         plateau.afficher(pions);              //si on le met sur une case noire il sera invisible
+        plateau.afficher(nouveauxPions);
 
 
-        input.close(); //à mettre TOUT à la fin*/
+        input.close(); //à mettre TOUT à la fin
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
