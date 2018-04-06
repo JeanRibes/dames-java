@@ -15,6 +15,8 @@ public class Case {
         return blanc;
     }
 
+    public boolean isNoir() { return !blanc;}
+
     public void setPion(Pion pion) {
         this.pion = pion;
     }

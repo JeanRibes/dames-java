@@ -15,8 +15,8 @@ public class LesDames {
         //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
-        pions[0].bouge(input.getPos(plateau)); //exemple pour bouger un pion
-        plateau.afficher(pions);              //si on le met sur une case noire il sera invisible
+
+        bougerPion(pions, plateau, input);
 
 
         input.close(); //à mettre TOUT à la fin
@@ -43,5 +43,25 @@ public class LesDames {
             }
         }
         return tableauPions;
+    }
+
+    public static void bougerPion(Pion[] pions, Plateau plateau, Input input) {
+        System.out.println("Séléctionnez un pion à bouger");
+        int[] pos = input.selectPion(plateau);
+        Pion pion = plateau.getPionDepuisCase(pos);
+        System.out.println("Pion en x="+pion.getX()+" y="+pion.getY()+" séléctionné");
+        pos = input.selectCase(plateau);
+        pion.bouge(pos);
+        System.out.println("Pion bougé en x="+pion.getX()+" y="+pion.getY());
+        plateau.afficher(pions);
+    }
+
+    public static int getPionIndex(Pion[] pions, Pion cePion) {
+        int returned = -1; //valeur par défaut pour "pas trouvé"
+        for (int i = 0; i < pions.length; i++) {
+            if (cePion.equals(pions[i]))
+                returned = i;
+        }
+        return returned;
     }
 }
