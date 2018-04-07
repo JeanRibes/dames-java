@@ -6,15 +6,17 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        //Pion[] pions = RemplirPlateau(plateau, 20);
+        Pion[] pions = RemplirPlateau(plateau, 20);
 
         //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         System.out.println("Lancement...");
 
-        Rest api = new Rest("https://api.ribes.me", "8d87985af8599b5a519f467742ec978a50bf93b3"); //crée une connection
+        //Rest api = new Rest("https://api.ribes.me", "8d87985af8599b5a519f467742ec978a50bf93b3"); //crée une connection
+        Rest api = new Rest("http://localhost:8000");
         Input input = new Input();
 
-        Pion[] pions = api.get(); // reçoit les pions depuis le serveur
+        api.creerPartie("finalSollution");
+        //Pion[] pions = api.get(); // reçoit les pions depuis le serveur
         plateau.update(pions);
         //api.post(pions);
 
@@ -25,8 +27,8 @@ public class LesDames {
         //input.getKeyCode();
         pions = sync(api, plateau);
         bougerPion(pions, plateau, input);
-        plateau.afficher(pions);
-        api.asyncPost(pions);
+
+        api.supprPartie();
 
 
         input.close(); //à mettre TOUT à la fin

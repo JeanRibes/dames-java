@@ -19,11 +19,15 @@ public class Rest {
     public GsonBuilder builder;
     public Gson gson;
 
-    public Rest(String url, String token) {
+    public Rest(String url) {
         this.server = url;
-        this.token = token;
+        //this.token = token;
         this.builder = new GsonBuilder();
         this.gson = this.builder.create();
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void test(Plateau plateau) {
@@ -128,6 +132,57 @@ public class Rest {
             return; // to stop the thread
         }).start();
     }
+
+    public void creerPartie(String nom) { //crée une partie en attente sur lee lobby
+        Partie partie = new Partie(nom);
+        try {
+            URL url = new URL(server + "/dames/partie/");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            String input = gson.toJson(partie);
+
+            OutputStream os = conn.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            this.token = br.readLine();
+            System.out.println(token);
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            System.out.println("URL incorrecte");
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            System.out.println("Connection échouée");
+            e.printStackTrace();
+        }
+
+    }
+
+    public void supprPartie() throws IOException {
+        URL myURL = new URL(server + "/dames/delete/");
+        HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+        conn.setRequestMethod("DELETE");
+        conn.setRequestProperty("Authorization", "Token " + this.token);
+        conn.connect();
+        conn.getInputStream();
+    }
+
+    public String[] waitingPlayers() {
+        return new String[1];
+    }
 }
 
 class UUID {
@@ -135,5 +190,18 @@ class UUID {
 
     public String toString() {
         return this.uuid;
+    }
+}
+
+class Partie {
+    String player1; //joue les pions blancs
+    String player2; //joue les pions noirs
+
+    Partie(String player1) {
+        this.player1 = player1;
+    }
+
+    void setPlayer2(String player2) {
+        this.player2 = player2;
     }
 }
