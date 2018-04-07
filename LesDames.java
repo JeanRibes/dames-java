@@ -13,12 +13,15 @@ public class LesDames {
         Rest api = new Rest("https://api.ribes.me"); //crée une connection
         //Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
+        boolean joueBlanc;
         if(utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
              pions = RemplirPlateau(plateau, 20);
+             joueBlanc = true;
         }
         else {
             pions = api.get(); // reçoit les pions depuis le serveur
+            joueBlanc = false;
         }
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         Input input = new Input(); //à mettre après l'entrée utilisateur
@@ -29,12 +32,13 @@ public class LesDames {
         bougerPion(pions, plateau, input);
         //api.asyncPost(pions); //envoie les pions au serveur de manière asynchrone
         api.post(pions); //envoie au serveur de manière synchrone
+        api.aToiLeTour();
+
         plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
         //input.getKeyCode();
         pions = sync(api, plateau);
         bougerPion(pions, plateau, input);
         api.post(pions);
-
         //api.supprPartie(); quand c'est fini, suopprimer pour éviter de flood
 
 

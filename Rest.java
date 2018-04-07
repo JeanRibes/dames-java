@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class Rest {
     public GsonBuilder builder;
     public Gson gson;
     public Partie[] lobby;
+    public boolean joueBlanc;
 
     public Rest(String url) {
         this.server = url;
@@ -136,6 +138,7 @@ public class Rest {
 
     public void creerPartie(String nom) { //crée une partie en attente sur lee lobby
         Partie partie = new Partie(nom);
+        this.joueBlanc = true;
         try {
             URL url = new URL(server + "/dames/partie/");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -169,7 +172,6 @@ public class Rest {
             System.out.println("Connection échouée");
             e.printStackTrace();
         }
-
     }
 
     public void supprPartie() throws IOException {
@@ -205,9 +207,10 @@ public class Rest {
     }
 
     public void rejoindre(int id) {
+        this.joueBlanc = false;
         try {
-            URL myURL = new URL(server + "/dames/join/"+id);
-            URLConnection conn = myURL.openConnection();
+            URL myURL = new URL(server + "/dames/join/" + id);
+            HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
             conn.connect();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -222,6 +225,37 @@ public class Rest {
             System.out.println("Connection échouée");
         }
     }
+
+    public boolean aQuiLeTour() throws IOException {
+        URL myURL = new URL(server + "/dames/a-qui-le-tour/");
+        HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+        conn.setRequestMethod("GET");
+        System.out.println(this.token);
+        conn.setRequestProperty("Authorization", "Token " + this.token);
+        conn.connect();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                (conn.getInputStream())));
+
+        boolean tour = gson.fromJson(br.readLine(), boolean.class); //vrai si c'est aux blancs
+        System.out.println(tour);
+        if(this.joueBlanc == tour)
+            return true;
+        else return false;
+    }
+
+    public boolean aToiLeTour() throws IOException {
+        URL myURL = new URL(server + "/dames/a-toi-le-tour/");
+        HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+        conn.setRequestProperty("Authorization", "Token " + this.token);
+        conn.connect();
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                (conn.getInputStream())));
+        br.readLine(); //si je ne demande pas le texte JAVA ne fait pas la requête ... :(
+        System.out.println("à l'autre !");
+        return false;
+    }
+
 }
 
 class UUID {
