@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar jeu-dames.jar
+java -cp jline.jar:gson-2.8.2.jar:. LesDames
