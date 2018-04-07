@@ -76,6 +76,7 @@ public class Input {
             return "ENTER";
         } catch (IOException e) {
             System.out.println("Erreur interne");
+            e.printStackTrace();
             return "ERROR";
         }
     }

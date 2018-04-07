@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Scanner;
 
 public class LesDames {
     /*
@@ -6,17 +7,22 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        Pion[] pions = RemplirPlateau(plateau, 20);
 
-        //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         System.out.println("Lancement...");
 
-        //Rest api = new Rest("https://api.ribes.me", "8d87985af8599b5a519f467742ec978a50bf93b3"); //crée une connection
-        Rest api = new Rest("http://localhost:8000");
-        Input input = new Input();
+        Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        //Rest api = new Rest("http://localhost:8000");
+        Pion[] pions;
+        if(utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
+        {
+             pions = RemplirPlateau(plateau, 20);
+        }
+        else {
+            pions = api.get(); // reçoit les pions depuis le serveur
+        }
+        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        Input input = new Input(); //à mettre après l'entrée utilisateur
 
-        api.creerPartie("finalSollution");
-        //Pion[] pions = api.get(); // reçoit les pions depuis le serveur
         plateau.update(pions);
         //api.post(pions);
 
@@ -27,8 +33,9 @@ public class LesDames {
         //input.getKeyCode();
         pions = sync(api, plateau);
         bougerPion(pions, plateau, input);
+        api.post(pions);
 
-        api.supprPartie();
+        //api.supprPartie(); quand c'est fini, suopprimer pour éviter de flood
 
 
         input.close(); //à mettre TOUT à la fin
@@ -82,5 +89,26 @@ public class LesDames {
         plateau.afficher(pions);
         System.out.println("Pions recus du serveur");
         return pions;
+    }
+
+    public static boolean utiliserLobby(Rest api) { //retourne TRUE si le joueur joue les pions blancs
+        System.out.println("Appuyez sur Entrée pour rejoindre une partie, ou tapez un pseudo");
+        Scanner sc = new Scanner(System.in);
+        String nom = sc.nextLine();
+        if (nom.length() > 0) {
+            api.creerPartie(nom);
+            return true;
+        } else {
+            api.getLobby();
+            for (int i = 0; i < api.lobby.length; i++) {
+                System.out.println(api.lobby[i].player1 + " #" + i);
+            }
+            System.out.println("Faites votre choix : (entrez un nombre) >");
+            int choix = sc.nextInt();
+            System.out.println("OUI");
+            System.out.println(api.lobby[choix].player1);
+            api.rejoindre(api.lobby[choix].id);
+            return false;
+        }
     }
 }

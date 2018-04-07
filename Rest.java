@@ -18,6 +18,7 @@ public class Rest {
     private String username;
     public GsonBuilder builder;
     public Gson gson;
+    public Partie[] lobby;
 
     public Rest(String url) {
         this.server = url;
@@ -74,7 +75,7 @@ public class Rest {
             while ((output = br.readLine()) != null) {
                 received.append(output);
             }
-            System.out.println("GOT :"+received);
+            //System.out.println("GOT :"+received);
             return gson.fromJson(received.toString(), Pion[].class);
         } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");
@@ -108,9 +109,9 @@ public class Rest {
                     (conn.getInputStream())));
 
             String output;
-            while ((output = br.readLine()) != null) {
+            /*while ((output = br.readLine()) != null) {
                 System.out.println("POST res:"+output);
-            }
+            }*/
 
             conn.disconnect();
 
@@ -156,7 +157,7 @@ public class Rest {
                     (conn.getInputStream())));
 
             this.token = br.readLine();
-            System.out.println(token);
+            //System.out.println(token);
 
             conn.disconnect();
 
@@ -180,8 +181,46 @@ public class Rest {
         conn.getInputStream();
     }
 
-    public String[] waitingPlayers() {
-        return new String[1];
+    public void getLobby() {
+        //return new String[1];
+        try {
+            URL myURL = new URL(server + "/dames/lobby/?format=json");
+            URLConnection conn = myURL.openConnection();
+            conn.connect();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+            StringBuilder received = new StringBuilder();
+            String output;
+            while ((output = br.readLine()) != null) {
+                received.append(output);
+            }
+            //System.out.println("GOT :"+received);
+            this.lobby = gson.fromJson(received.toString(), Partie[].class);
+        } catch (MalformedURLException e) {
+            System.out.println("URL incorrecte");
+        } catch (IOException e) {
+            System.out.println("Connection échouée");
+        }
+    }
+
+    public void rejoindre(int id) {
+        try {
+            URL myURL = new URL(server + "/dames/join/"+id);
+            URLConnection conn = myURL.openConnection();
+            conn.connect();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            this.token = br.readLine();
+            //System.out.println(token);
+
+        } catch (MalformedURLException e) {
+            System.out.println("URL incorrecte");
+        } catch (IOException e) {
+            System.out.println("Connection échouée");
+        }
     }
 }
 
@@ -196,6 +235,7 @@ class UUID {
 class Partie {
     String player1; //joue les pions blancs
     String player2; //joue les pions noirs
+    int id;
 
     Partie(String player1) {
         this.player1 = player1;

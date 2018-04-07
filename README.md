@@ -28,3 +28,8 @@ Pour la partie synchronisation, le côté serveur est ici : [central/dames](http
 Les duets de joueurs utilisent le même token d'authentification, cependant le serveur implémente JWT, il est possible de créer un compte par joueur
 
 demander à @JeanRibes pour les informations d'authentification
+
+## Fun facts
+Dans le mode "dégradé" où il faut utiliser ZSQD+espace puis enter, le joueur peut taper plusieurs lettres à la fois, et ça exécutera tout
+
+ça fait un peu comme des macros au clavier
