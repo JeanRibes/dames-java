@@ -17,9 +17,10 @@ public class Affichage{
     System.out.println(reader.read());
     int read = reader.read();
         while (read != 13) {
-            String sortie = this.arrowTest(read);
-            if (sortie.length()>0)
-                    System.out.println(sortie);
+            System.out.println(read);
+            //String sortie = this.arrowTest(read);
+            //if (sortie.length()>0)
+              //      System.out.println(sortie);
         read = reader.read();
     }
         reader.close();

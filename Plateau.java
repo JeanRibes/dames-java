@@ -21,12 +21,13 @@ class Plateau {
         }
         int a = 1;
     }
+
     public void afficherPlateau(int[] posCurseur) {
         System.out.println("-----------------------------------------");
         for (int y=0;y<this.cases.length; y++) {
             for(int x=0; x<this.cases[y].length; x++) {
                 Case cetteCase = this.cases[y][x];
-                if(x == posCurseur[0] && y == posCurseur[1]) { //le curseur est sur la case
+                if(x == posCurseur[0] && y == posCurseur[1]) { //le selectionnecurseur est sur la case
                     System.out.print("|C"+cetteCase+"C");
                 }
                 else{
@@ -41,6 +42,7 @@ class Plateau {
             System.out.println("-----------------------------------------");
         }
     }
+
     public void afficher(Pion[] pions) {
         this.update(pions);
         System.out.println("-----------------------------------------");
@@ -71,5 +73,22 @@ class Plateau {
         }
     }
 
+    public Pion getPionDepuisCase(int[] pos) { //ça ne fera pas recommencer en cas d'erreur
 
+        try {
+            return this.cases[pos[1]][pos[0]].pion;
+        } catch (Exception e) {
+            System.out.println("Veuillez séléctionner un pion correct");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean hasPion(int[] pos) {
+        return this.cases[pos[1]][pos[0]].hasPion();
+    }
+
+    public boolean estVide(int[] pos) {
+        return !this.cases[pos[1]][pos[0]].hasPion();
+    }
 }

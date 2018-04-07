@@ -3,7 +3,7 @@ public class Pion {
     private int coordY;
     public String typePion;
     public boolean blanc;
-    public boolean curseur;
+    public boolean selectionne;
 
     /*
     typePion: mort, pion, dame
@@ -14,7 +14,7 @@ public class Pion {
         this.coordY = coordY;
         this.typePion = typePion;
         this.blanc = blanc;
-        this.curseur = false;
+        this.selectionne = false;
     }
 
 
@@ -46,6 +46,7 @@ public class Pion {
         if (newpos.length == 2) {
             this.coordX = newpos[0];
             this.coordY = newpos[1];
+            this.selectionne = false;
         } else
             System.out.println("Il faut une coordonnée X et Y pour bouger");
     }
@@ -57,8 +58,8 @@ public class Pion {
     }
 
     public String toString() {
-        if (this.typePion.equals("mort")) {
-            return "x";
+        if (this.selectionne) {
+            return "@";
         } else {
             if (this.typePion.equals("pion")) {
                 if (blanc)
@@ -79,5 +80,9 @@ public class Pion {
         pos[0] = this.coordX;
         pos[1] = this.coordY;
         return pos;
+    }
+
+    public void selectionner() { //pour montrer visuellement que ce pion va être bougé par le joueur
+        this.selectionne = true;
     }
 }
