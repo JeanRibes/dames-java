@@ -6,26 +6,27 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        Pion[] pions = RemplirPlateau(plateau, 20);
+        //Pion[] pions = RemplirPlateau(plateau, 20);
 
-        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         System.out.println("Lancement...");
+
         Rest api = new Rest("https://api.ribes.me", "8d87985af8599b5a519f467742ec978a50bf93b3"); //crée une connection
-
-        //api.asyncPost(pions); //envoie les pions au serveur de manière asynchrone
-        api.asyncPost(RemplirPlateau(plateau, 10));
-        plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
-        System.out.println("GET maintenant");
-        Pion[] nouveauxPions = api.get(); // reçoit les pions depuis le serveur
-
-        //api.post(nouveauxPions); //envoie les pions de manière synchrone
-
         Input input = new Input();
-        //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
-        //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
+        Pion[] pions = api.get(); // reçoit les pions depuis le serveur
+        plateau.update(pions);
+        //api.post(pions);
 
         bougerPion(pions, plateau, input);
+        //api.asyncPost(pions); //envoie les pions au serveur de manière asynchrone
+        api.post(pions); //envoie au serveur de manière synchrone
+        plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
+        //input.getKeyCode();
+        pions = sync(api, plateau);
+        bougerPion(pions, plateau, input);
+        plateau.afficher(pions);
+        api.asyncPost(pions);
 
 
         input.close(); //à mettre TOUT à la fin
@@ -58,10 +59,10 @@ public class LesDames {
         System.out.println("Séléctionnez un pion à bouger");
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
-        System.out.println("Pion en x="+pion.getX()+" y="+pion.getY()+" séléctionné");
+        System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné");
         pos = input.selectCase(plateau);
         pion.bouge(pos);
-        System.out.println("Pion bougé en x="+pion.getX()+" y="+pion.getY());
+        System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
         plateau.afficher(pions);
     }
 
@@ -72,5 +73,12 @@ public class LesDames {
                 returned = i;
         }
         return returned;
+    }
+
+    public static Pion[] sync(Rest api, Plateau plateau) {
+        Pion[] pions = api.get();
+        plateau.afficher(pions);
+        System.out.println("Pions recus du serveur");
+        return pions;
     }
 }
