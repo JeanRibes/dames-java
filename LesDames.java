@@ -5,24 +5,26 @@ public class LesDames {
     /*
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
      */
-    public static void main(String[] args) throws IOException {
-        Input input = new Input();
+    public static void main(String[] args) throws IOException, InterruptedException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
 
         System.out.println("Lancement...");
 
-        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
-        Rest api = new Rest("http://localhost:8000");
+        Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        //Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
             pions = RemplirPlateau(plateau, 20);
             joueBlanc = true;
+            api.post(pions);
         } else {
             pions = api.get(); // reçoit les pions depuis le serveur
             joueBlanc = false;
         }
+        Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
+        input.reset(plateau.taille);
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         //plateau.afficher(); // affiche le plateau actuel, sans le curseur
         //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
@@ -30,7 +32,24 @@ public class LesDames {
 
 
         while(pionsVivants(pions)>1){
+            while(!api.aQuiLeTour()) {
+                System.out.print(".");
+                Thread.sleep(3000);
+            }
+            pions = api.get();
+            System.out.println("Reçu");
+
+            plateau.afficher(pions);
+            if (joueBlanc) //lol je me suis déjà mélangé !
+                System.out.println("VOUS JOUEZ BLANCS");
+            else
+                System.out.println("VOUS JOUEZ NOIRS");
             action(pions, plateau, input);
+            plateau.afficher(pions);
+
+            api.post(pions);
+            System.out.println("Envoi");
+            api.aToiLeTour();
         }
 
 
@@ -38,6 +57,7 @@ public class LesDames {
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
+        System.out.println("Plateau crée !");
         Pion tableauPions[] = new Pion[(2 * nbPion)];
         //Pion tableauPions[] = new Pion[1+(2 * nbPion)];
         int i = 0;
@@ -113,6 +133,7 @@ public class LesDames {
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
+
         pos = input.getPos(plateau);
         vide:
         if (plateau.estVide(pos))
@@ -129,10 +150,10 @@ public class LesDames {
                 //cible = input.getPion(plateau);
             }
             pion.mange(cible); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
-            plateau.afficher(pions);
+            //plateau.afficher(pions);
         }
-        System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
-        plateau.afficher(pions);
+        //System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
+        //plateau.afficher(pions);
     }
 
     public static int pionsVivants(Pion[] pions) {

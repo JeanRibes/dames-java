@@ -238,7 +238,7 @@ public class Rest {
         URL myURL = new URL(server + "/dames/a-qui-le-tour/");
         HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
         conn.setRequestMethod("GET");
-        System.out.println(this.token);
+        //System.out.println(this.token);
         conn.setRequestProperty("Authorization", "Token " + this.token);
         conn.connect();
 
@@ -246,7 +246,7 @@ public class Rest {
                 (conn.getInputStream())));
 
         boolean tour = gson.fromJson(br.readLine(), boolean.class); //vrai si c'est aux blancs
-        System.out.println(tour);
+        //System.out.println(tour);
         if(this.joueBlanc == tour)
             return true;
         else return false;

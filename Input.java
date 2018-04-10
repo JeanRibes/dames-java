@@ -32,9 +32,9 @@ public class Input {
         this.terminal.close();
     }
 
-    public void reset() { //remet les coordonnées du curseur à 0; par défaut il se souvient de sa précédente séléction
-        this.curX = 0;
-        this.curY = 0;
+    public void reset(int taille) { //remet les coordonnées du curseur à 0; par défaut il se souvient de sa précédente séléction
+        this.curX = taille/2;
+        this.curY = taille/2;
     }
 
     public String getKeyCode() {
