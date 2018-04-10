@@ -33,6 +33,7 @@ public class Case {
 
     public String toString() {
         try {
+            //noinspection ResultOfMethodCallIgnored
             this.pion.getX();
             return this.pion.toString();
         } catch (Exception e) {

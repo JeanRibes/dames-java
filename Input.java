@@ -64,6 +64,7 @@ public class Input {
                         break;
                     case 10:
                         break;
+                    //noinspection ConstantConditions
                     case 32:
                         return "ENTER";
                     default:
@@ -99,8 +100,7 @@ public class Input {
                     this.curY -= 1;
                 break;
         }
-        int[] pos = {this.curX, this.curY};
-        return pos;
+        return new int[]{this.curX, this.curY};
     }
 
     public int[] getPos(Plateau plateau) {
@@ -141,14 +141,12 @@ public class Input {
         }
         return pos;
     }
-    public Pion getPion(Plateau plateau) { //donne le pion directement
+    public Pion getPion(Plateau plateau) { //renvoie un pion sans le passer en "séléctionné"
         int[] pos = getPos(plateau);
         while (plateau.estVide(pos)) {
             System.out.println("Cette case est vide !");
             pos = getPos(plateau);
         }
-        Pion pion = plateau.getPionDepuisCase(pos);
-        pion.selectionner();
-        return pion;
+        return plateau.getPionDepuisCase(pos);
     }
 }

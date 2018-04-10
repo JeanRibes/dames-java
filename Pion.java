@@ -26,14 +26,6 @@ public class Pion {
         return coordY;
     }
 
-    public void setX(int NewX) {
-        coordX = NewX;
-    }
-
-    public void setY(int NewY) {
-        coordY = NewY;
-    }
-
     public String getTypePion() {
         return typePion;
     }
@@ -54,6 +46,7 @@ public class Pion {
     public void mange(Pion cible) {
         this.coordX = cible.getX();
         this.coordY = cible.getY();
+        this.selectionne = false;
         cible.setTypePion("mort");
     }
 
@@ -66,11 +59,14 @@ public class Pion {
                     return "◯";
                 else
                     return "◉";
-            } else { //une Dame
-                if (blanc)
-                    return "▢";
-                else
-                    return "▣";
+            } else {
+                if (this.typePion.equals("dame")) { //une Dame
+                    if (blanc)
+                        return "▢";
+                    else
+                        return "▣";
+                }
+                else return "x";
             }
         }
     }
@@ -84,5 +80,8 @@ public class Pion {
 
     public void selectionner() { //pour montrer visuellement que ce pion va être bougé par le joueur
         this.selectionne = true;
+    }
+    public void deselectionner() {
+        this.selectionne = false;
     }
 }

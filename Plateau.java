@@ -19,7 +19,6 @@ class Plateau {
                 }
             }
         }
-        int a = 1;
     }
 
     public void afficherPlateau(int[] posCurseur) {
@@ -69,7 +68,8 @@ class Plateau {
                 cetteCase.pion = null;
         }
         for (int i = 0; i < pions.length; i++) {
-            this.cases[pions[i].getY()][pions[i].getX()].setPion(pions[i]);
+            if (!pions[i].typePion.equals("mort")) // on ne rajoute pas les pions morts à l'affichage
+                this.cases[pions[i].getY()][pions[i].getX()].setPion(pions[i]);
         }
     }
 
