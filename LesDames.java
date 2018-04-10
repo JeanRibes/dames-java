@@ -10,16 +10,15 @@ public class LesDames {
 
         System.out.println("Lancement...");
 
-        Rest api = new Rest("https://api.ribes.me"); //crée une connection
-        //Rest api = new Rest("http://localhost:8000");
+        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
         boolean joueBlanc;
-        if(utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
+        if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
-             pions = RemplirPlateau(plateau, 20);
-             joueBlanc = true;
-        }
-        else {
+            pions = RemplirPlateau(plateau, 20);
+            joueBlanc = true;
+        } else {
             pions = api.get(); // reçoit les pions depuis le serveur
             joueBlanc = false;
         }
@@ -40,7 +39,6 @@ public class LesDames {
         bougerPion(pions, plateau, input);
         api.post(pions);
         //api.supprPartie(); quand c'est fini, suopprimer pour éviter de flood
-
 
         input.close(); //à mettre TOUT à la fin
     }
@@ -96,23 +94,24 @@ public class LesDames {
     }
 
     public static boolean utiliserLobby(Rest api) { //retourne TRUE si le joueur joue les pions blancs
-        System.out.println("Appuyez sur Entrée pour rejoindre une partie, ou tapez un pseudo");
+        System.out.println("Tapez un pseudo pour jouer en ligne");
         Scanner sc = new Scanner(System.in);
         String nom = sc.nextLine();
-        if (nom.length() > 0) {
-            api.creerPartie(nom);
-            return true;
-        } else {
-            api.getLobby();
-            for (int i = 0; i < api.lobby.length; i++) {
-                System.out.println(api.lobby[i].player1 + " #" + i);
-            }
-            System.out.println("Faites votre choix : (entrez un nombre) >");
-            int choix = sc.nextInt();
+        api.getLobby();
+        for (int i = 0; i < api.lobby.length; i++) {
+            System.out.println(api.lobby[i].player1 + " #" + i);
+        }
+        System.out.println("Créer une partie : #-1");
+        System.out.println("Faites votre choix : (entrez un nombre) >");
+        int choix = sc.nextInt();
+        if (choix >= 0) {
             System.out.println("OUI");
             System.out.println(api.lobby[choix].player1);
-            api.rejoindre(api.lobby[choix].id);
+            api.rejoindre(api.lobby[choix].id, nom);
             return false;
+        } else {
+            api.creerPartie(nom);
+            return true;
         }
     }
 }

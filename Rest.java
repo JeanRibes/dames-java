@@ -206,23 +206,31 @@ public class Rest {
         }
     }
 
-    public void rejoindre(int id) {
+    public void rejoindre(int id, String nom) {
         this.joueBlanc = false;
         try {
             URL myURL = new URL(server + "/dames/join/" + id);
             HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
-            conn.connect();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            String input = "{\"nom\":\""+nom+"\"}";
+            OutputStream os = conn.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
 
             this.token = br.readLine();
-            //System.out.println(token);
+            System.out.println(token);
 
         } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");
+            e.printStackTrace();
         } catch (IOException e) {
             System.out.println("Connection échouée");
+            e.printStackTrace();
         }
     }
 
