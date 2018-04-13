@@ -102,6 +102,12 @@ public class LesDames {
         return pions;
     }
 
+    /**
+     * Helper pour utiliser le lobby multjoueur:
+     *   On peut créer ou rejoindre une partie en attente
+     * @param api l'intance Rest utilisée
+     * @return vrai si le joueur joue les pions blancs
+     */
     public static boolean utiliserLobby(Rest api) { //retourne TRUE si le joueur joue les pions blancs
         System.out.println("Tapez un pseudo pour jouer en ligne");
         Scanner sc = new Scanner(System.in);
@@ -123,6 +129,14 @@ public class LesDames {
             return true;
         }
     }
+
+    /**
+     *  méthode pour une action générique :
+     *  bouger ou manger un pion
+     * @param pions
+     * @param plateau
+     * @param input
+     */
     public static void action(Pion[] pions, Plateau plateau, Input input) {
         System.out.println("Séléctionnez un pion à bouger");
         plateau.update(pions);

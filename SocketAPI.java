@@ -1,14 +1,15 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.java_websocket.client.WebSocketClient;
-//import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
+/**
+ * Cette classe fournit des méthodes pour recevoir & attendre des données depuis un WebSocket
+ * la connection au serveur n'a pas besoin d'être ré-étableie à chaque fois, et le serveur peut push les infos
+ */
 public class SocketAPI {
     public GsonBuilder builder;
     public Gson gson;
@@ -18,11 +19,10 @@ public class SocketAPI {
     public String couleur;
 
     /**
-     * Cette classe fournit des méthodes pour recevoir & attendre des données depuis un WebSocket
-     * la connection au serveur n'a pas besoin d'être ré-étableie à chaque fois, et le serveur peut envoyer les infos
      *
-     * @param server le FQDN du serveur, sans http:// ... c'est du websocket !
-     * @param id     l'id de la partie, je n'ai pas assez creusé Django-Channels pour trouver comment authentifier avec un Token
+     * @param server URI Websocket de la forme ws://example.com ou wss://secure.com
+     * @param id l'id de la partie reçu de RestAPI
+     * @param joueBlanc booléean valant true si le mec joue les blancs
      */
     public SocketAPI(String server, String id, boolean joueBlanc) throws URISyntaxException {
         this.builder = new GsonBuilder();
