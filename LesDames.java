@@ -1,13 +1,17 @@
+import org.json.JSONException;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class LesDames {
     /*
     Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException, JSONException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-
+        SocketAPI sa = new SocketAPI();
+        System.exit(0);
         System.out.println("Lancement...");
 
         Rest api = new Rest("https://api.ribes.me"); //crée une connection
