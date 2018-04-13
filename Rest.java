@@ -187,7 +187,7 @@ public class Rest {
                     (conn.getInputStream())));
 
             this.token = br.readLine();
-            //System.out.println(token);
+            System.out.println(token);
 
             conn.disconnect();
 
@@ -311,6 +311,15 @@ public class Rest {
         br.readLine(); //si je ne demande pas le texte JAVA ne fait pas la requête ... :(
         //System.out.println("à l'autre !");
         return false;
+    }
+    public String getId() throws IOException {
+        URL myURL = new URL(server + "/dames/id/");
+        HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
+        conn.setRequestProperty("Authorization", "Token " + this.token);
+        conn.connect();
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                (conn.getInputStream())));
+        return  br.readLine();
     }
 
 }

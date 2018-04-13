@@ -10,12 +10,10 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException, JSONException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        SocketAPI sa = new SocketAPI();
-        System.exit(0);
-        System.out.println("Lancement...");
+        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
 
-        Rest api = new Rest("https://api.ribes.me"); //crée une connection
-        //Rest api = new Rest("http://localhost:8000");
+        System.out.println("Lancement...");
+        Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
@@ -23,6 +21,7 @@ public class LesDames {
             pions = RemplirPlateau(plateau, 20);
             joueBlanc = true;
             api.post(pions);
+            api.aToiLeTour();
         } else {
             pions = api.get(); // reçoit les pions depuis le serveur
             joueBlanc = false;
@@ -30,16 +29,18 @@ public class LesDames {
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
         input.reset(plateau.taille);
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
-        //plateau.afficher(); // affiche le plateau actuel, sans le curseur
+        plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
         //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
-
-
+        SocketAPI ws = new SocketAPI("127.0.0.1:8000", api.getId());
+        //ws.test();
         while(pionsVivants(pions)>1){
-            while(!api.aQuiLeTour()) {
+            /*while(!api.aQuiLeTour()) {
                 System.out.print(".");
                 Thread.sleep(3000);
-            }
+            }*/
+            ws.attendreTour(joueBlanc);
+
             pions = api.get();
             System.out.println("Reçu");
 
