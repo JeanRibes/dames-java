@@ -12,6 +12,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * La classe simplifiant la synchronisation du jeu avec un serveur distant en vue d'une partie multijoueur via internet
+ * &Ccedil;a utilise des requ&ecirc;tes HTTP pour communiquer avec un serveur d'API "REsT" &eacute;crit en python avec le cadriciel Django
+ */
 public class Rest {
     private String server;
     private String token;
@@ -21,7 +25,11 @@ public class Rest {
     public Gson gson;
     public Partie[] lobby;
     public boolean joueBlanc;
-
+    /**
+     * Contient les infos n&eacute;cessaire &agrave; la communication avec le serveur d'API
+     * @param url l'url du serveur d'API, voir https://github.com/JeanRibes/central/tree/master/dames
+     *
+     */
     public Rest(String url) {
         this.server = url;
         //this.token = token;
@@ -63,6 +71,10 @@ public class Rest {
         }
     }
 
+    /**
+     * Effectue une requ&ecirc;te GET au serveur d'API
+     * @return un tableau d'objets Pion  qui repr&eacute;sente l'&eacute;tat du jeu actualis&eacute;
+     */
     public Pion[] get() {
         try {
             URL myURL = new URL(server + "/dames/sync/?format=json");
@@ -88,6 +100,11 @@ public class Rest {
         }
     }
 
+    /**
+     * Envoie les pions au serveur d'API
+     * À utiliser après avoir fait bougé un pion sur le plateau
+     * @param pions un tableau d'objets Pion qui représente l'état du jeu à actualiser sur le serveur
+     */
     public void post(Pion[] pions) {
         try {
             URL url = new URL(server + "/dames/sync/?format=json");
@@ -128,6 +145,11 @@ public class Rest {
 
     }
 
+    /**
+     * Version asynchrone de post()
+     * @see Rest#post(Pion[])
+     * @param pions un tableau d'objets Pion qui représente l'état du jeu à actualiser sur le serveur
+     */
     public void asyncPost(Pion[] pions) {
         new Thread(() -> {
             post(pions);
@@ -136,6 +158,11 @@ public class Rest {
         }).start();
     }
 
+    /** Crée une partie en attente sur le serveur d'API
+     * le joueur sera "player1" et devra jouer les pions blancs
+     * dans la v1.0, il peut d'ailleur jouer son premier coup sans avoir d'adversaire
+     * @param nom le nom du joueur "player1" qui joue les pions blancs
+     */
     public void creerPartie(String nom) { //crée une partie en attente sur lee lobby
         Partie partie = new Partie(nom);
         this.joueBlanc = true;
@@ -174,6 +201,10 @@ public class Rest {
         }
     }
 
+    /**
+     * Supprimme la partie courante sur le serveur
+     * Note : d&egrave;s qu'un adversaire a rejoint une partie, le serveur n'affiche plus cette partie
+     */
     public void supprPartie() throws IOException {
         URL myURL = new URL(server + "/dames/delete/");
         HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
@@ -183,6 +214,10 @@ public class Rest {
         conn.getInputStream();
     }
 
+    /**
+     * Instancie un tableau d'objets Partie, qui repr&eacute;sente le Lobby
+     * je suis oblig&eacute; de cr&eacute;er une classe s&eacute;par&eacute;e pour utiliser GSON
+     */
     public void getLobby() {
         //return new String[1];
         try {
@@ -206,6 +241,12 @@ public class Rest {
         }
     }
 
+    /**
+     * Méthode pour rejoinde une partie en attente
+     * permet de récupérer le token pour poursuivre la communication avec le serveur
+     * @param id l'id de la partie (pas le numéro # dans le lobby java) sur le serveur
+     * @param nom le nom du second joueur "player2" qui sera obligé de jouer lespions noirs
+     */
     public void rejoindre(int id, String nom) {
         this.joueBlanc = false;
         try {
@@ -234,6 +275,10 @@ public class Rest {
         }
     }
 
+    /**
+     * Permet de connaître quel joueur doit jouer
+     * @return vrai si c'est le tour du joueur (compare avec la valeur @see Rest#joueBlanc)
+     */
     public boolean aQuiLeTour() throws IOException {
         URL myURL = new URL(server + "/dames/a-qui-le-tour/");
         HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
@@ -252,6 +297,10 @@ public class Rest {
         else return false;
     }
 
+    /**
+     * Permet de faire savoir au serveur que le joueur a fini son tour
+     * @return forcément False, pour représenter que c'est au tour de l'adversaire
+     */
     public boolean aToiLeTour() throws IOException {
         URL myURL = new URL(server + "/dames/a-toi-le-tour/");
         HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
@@ -260,7 +309,7 @@ public class Rest {
         BufferedReader br = new BufferedReader(new InputStreamReader(
                 (conn.getInputStream())));
         br.readLine(); //si je ne demande pas le texte JAVA ne fait pas la requête ... :(
-        System.out.println("à l'autre !");
+        //System.out.println("à l'autre !");
         return false;
     }
 

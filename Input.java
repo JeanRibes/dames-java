@@ -4,12 +4,20 @@ import org.jline.terminal.TerminalBuilder;
 import java.io.IOException;
 import java.io.Reader;
 
+/**
+ * Classe permettant de simplifier l'interfa&ccedil;age avec l'utilisateur
+ * jline est tr&egrave;s peu utilis&eacute;, c'est uniquement pour avoir les codes clavier sans que l'utilisateur appuie sur enter
+ */
 public class Input {
     public Reader reader;
     public Terminal terminal;
     public int curX;
     public int curY;
 
+    /**
+     * Constructeur qui va afficher &agrave; l'&eacute;cran des instructions pour la s&eacute;l&eacute;ction lorqu'on l'appellera
+     * Il ne prend pas d'argument
+     */
     public Input() throws IOException {
         this.curX = 0;
         this.curY = 0;
@@ -17,7 +25,7 @@ public class Input {
                 .jna(true)
                 .system(true)
                 .build();
-        System.out.println("Pour séléctionner un pion, dux méthodes sont disponibles :");
+        System.out.println("Pour séléctionner un pion, duex méthodes sont disponibles :");
         System.out.println("* flèches du clavier puis entrée");
         System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour se déplacer et Esapce pour valider");
         System.out.println("    et entre chaque touche il faudra appuyer sur enter");
@@ -32,11 +40,20 @@ public class Input {
         this.terminal.close();
     }
 
+    /**
+     * Permet de repositionner le curseur, mis habituellement au milieu de l'&eacute;cran
+     * @param taille la taille du plateau
+     */
     public void reset(int taille) { //remet les coordonnées du curseur à 0; par défaut il se souvient de sa précédente séléction
         this.curX = taille/2;
         this.curY = taille/2;
     }
 
+    /**
+     * M&eacute;thode interne pour traduire les codes clavier
+     * termine l'ex&eacute;cution si on appuie sur Entr&eacute;e ou Espace
+     * @return une touche press&eacute;e
+     */
     public String getKeyCode() {
         try {
             int code = reader.read();
@@ -82,6 +99,13 @@ public class Input {
         }
     }
 
+    /**
+     *
+     * @param taille la taille du plateau une instance de Plateau
+     * @see Plateau#taille
+     * @param key la touche press&eacute;e par l'utilisateur
+     * @return un tableau de deux entiers [X,Y] repr&eacute;sentation la position du curseur
+     */
     public int[] updatePos(int taille, String key) {
         switch (key) {
             case "UP":
@@ -104,6 +128,13 @@ public class Input {
         return new int[]{this.curX, this.curY};
     }
 
+    /**
+     * Permet de s&eacute;l&eacute;ctionner une case sur le plateau en d&eacute;placant le curseur
+     * emp&ecirc;che de choisir une case noire (logque pour les Dames)
+     * @param plateau une instance de Plateau
+     * @see Plateau
+     * @return un tableau de deux entiers [X,Y]
+     */
     public int[] getPos(Plateau plateau) {
         /*curX = plateau.taille / 2;
         curY = plateau.taille / 2;*/
@@ -124,6 +155,13 @@ public class Input {
         return pos;
     }
 
+    /**
+     * S&eacute;l&eacute;ctionne un pion et effectue les v&eacute;rification.
+     * Cette m&eacute;thode "surcharge" getPos
+     * @see #getPos(Plateau)
+     * @param plateau
+     * @return
+     */
     public int[] selectPion(Plateau plateau) { // pour séléctionner les coordonnées d'un pion
         int[] pos = getPos(plateau);
         while (plateau.estVide(pos)) {

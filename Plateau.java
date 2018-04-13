@@ -1,7 +1,11 @@
-class Plateau {
+public class Plateau {
     private Case[][] cases;
     public int taille;
 
+    /**
+     * Constructeur qui va cr&eacute;er lui-m&ecirc;me ses cases, en alternant une sur deux blanche
+     * @param taille la taille du plateau de jeu (un carr&eacute;)
+     */
     public Plateau(int taille) {
         this.taille = taille;
         this.cases = new Case[taille][taille];
@@ -21,6 +25,11 @@ class Plateau {
         }
     }
 
+    /**
+     * M&eacute;thode interne, destin&eacute;e aux m&eacute;thodes d'Input
+     * @see Input
+     * @param posCurseur un tableau d'entiers [X,Y]
+     */
     public void afficherPlateau(int[] posCurseur) {
         System.out.println("-----------------------------------------");
         for (int y=0;y<this.cases.length; y++) {
@@ -42,6 +51,10 @@ class Plateau {
         }
     }
 
+    /**
+     * Affiche le jeu. &Agrave; utiliser !
+     * @param pions un tableau d'objets Pion qui repr&eacute;sente l'&eacute;tat du jeu
+     */
     public void afficher(Pion[] pions) {
         this.update(pions);
         System.out.println("-----------------------------------------");
@@ -62,6 +75,11 @@ class Plateau {
         return this.cases;
     }
 
+    /**
+     * Cette m&eacute;thode va ins&eacute;rer les pions dans les cases, pour faciliter l'affichage
+     * note: elle n'envoie pas les pions morts &agrave; l'affichage
+     * @param pions
+     */
     public void update(Pion[] pions) {
         for (Case[] ligne: this.cases) {
             for(Case cetteCase: ligne)
@@ -73,6 +91,12 @@ class Plateau {
         }
     }
 
+    /**
+     * Renvoie le pion situ&eacute; &agrave; la position demand&eacute;e
+     * @param pos un tableau d'entiers [X,Y]
+     * @return une instance de Pion
+     * @see Pion
+     */
     public Pion getPionDepuisCase(int[] pos) { //ça ne fera pas recommencer en cas d'erreur
 
         try {
@@ -84,10 +108,20 @@ class Plateau {
         }
     }
 
+    /**
+     * Permet de tester si une case contient un pion
+     * @param pos un tableau d'entiers [X,Y]
+     * @return vrai si la case &agrave; cette position contient un pion
+     */
     public boolean hasPion(int[] pos) {
         return this.cases[pos[1]][pos[0]].hasPion();
     }
-
+    /**
+     * Permet de tester si une case est vide
+     * Oui c'est un duplicata de hasPion()
+     * @param pos un tableau d'entiers [X,Y]
+     * @return vrai si la case &agrave; cette position est vide
+     */
     public boolean estVide(int[] pos) {
         return !this.cases[pos[1]][pos[0]].hasPion();
     }
