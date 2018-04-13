@@ -3,8 +3,6 @@ import com.google.gson.GsonBuilder;
 import org.java_websocket.client.WebSocketClient;
 //import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
