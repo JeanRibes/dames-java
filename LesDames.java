@@ -8,10 +8,10 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException, URISyntaxException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        //Rest api = new Rest("http://localhost:8000");
 
         System.out.println("Lancement...");
-        Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
@@ -25,25 +25,17 @@ public class LesDames {
             joueBlanc = false;
         }
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
-        input.reset(plateau.taille);
+        input.reset(plateau.taille-1);
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         //plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
 
-        SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
-        //SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId());
-        //ws.test();
+        //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
+        SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
         while(pionsVivants(pions)>1){
-            /*while(!api.aQuiLeTour()) {
-                System.out.print(".");
-                Thread.sleep(3000);
-            }*/
-            //ws.attendreTour(joueBlanc);
+            pions = ws.waitGet(); //attend jusqu'à la fin du tour de l'autre (donc jusqu'à réception des donées)
 
-            //pions = api.get();
-            pions = ws.waitGet();
-            System.out.println("Reçu");
-
-            plateau.afficher(pions);
+            System.out.println("À vous!");
+            plateau.update(pions);
             if (joueBlanc) //lol je me suis déjà mélangé !
                 System.out.println("VOUS JOUEZ BLANCS");
             else
@@ -51,16 +43,8 @@ public class LesDames {
             action(pions, plateau, input);
             plateau.afficher(pions);
 
-            //api.post(pions);
-            System.out.println("Envoi");
+            System.out.println("Attendez");
             ws.post(pions);
-            /*try {
-                Thread.sleep(3000); //c'est pour éviter la desynch
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            ws.data="";*/
-            //api.aToiLeTour();
         }
 
 
@@ -141,6 +125,7 @@ public class LesDames {
     }
     public static void action(Pion[] pions, Plateau plateau, Input input) {
         System.out.println("Séléctionnez un pion à bouger");
+        plateau.update(pions);
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
