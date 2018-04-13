@@ -10,10 +10,10 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException, JSONException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        Rest api = new Rest("https://api.ribes.me"); //crée une connection
 
         System.out.println("Lancement...");
-        Rest api = new Rest("http://localhost:8000");
+        //Rest api = new Rest("http://localhost");
         Pion[] pions;
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
@@ -32,7 +32,8 @@ public class LesDames {
         plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
         //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
         //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
-        SocketAPI ws = new SocketAPI("127.0.0.1:8000", api.getId());
+        //SocketAPI ws = new SocketAPI("wss://localhost", api.getId());
+        SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId());
         //ws.test();
         while(pionsVivants(pions)>1){
             /*while(!api.aQuiLeTour()) {

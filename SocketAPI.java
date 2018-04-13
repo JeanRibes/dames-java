@@ -26,7 +26,7 @@ public class SocketAPI {
         this.builder = new GsonBuilder();
         this.gson = this.builder.create();
         this.message = "";
-        this.ws = new WebSocketClient(new URI("ws://"+server+"/ws/ping/"+id+"/")) {
+        this.ws = new WebSocketClient(new URI(server+"/ws/ping/"+id+"/")) {
             @Override
             public void onMessage(String message) {
                 //System.out.println("reçcu msg");
