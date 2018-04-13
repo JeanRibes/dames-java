@@ -12,7 +12,11 @@ public class SocketAPI {
     public GsonBuilder builder;
     public Gson gson;
     public String message;
+    public String data;
     public WebSocketClient ws;
+    public WebSocketClient sync;
+    public boolean joueBlanc;
+    public String couleur;
 
     /**
      * Cette classe fournit des méthodes pour recevoir & attendre des données depuis un WebSocket
@@ -20,10 +24,12 @@ public class SocketAPI {
      * @param server le FQDN du serveur, sans http:// ... c'est du websocket !
      * @param id l'id de la partie, je n'ai pas assez creusé Django-Channels pour trouver comment authentifier avec un Token
      */
-    public SocketAPI(String server, String id) throws URISyntaxException {
+    public SocketAPI(String server, String id, boolean joueBlanc) throws URISyntaxException {
         this.builder = new GsonBuilder();
         this.gson = this.builder.create();
         this.message = "";
+        this.data = "";
+        this.joueBlanc = joueBlanc;
         this.ws = new WebSocketClient(new URI(server+"/ws/ping/"+id+"/")) {
             @Override
             public void onMessage(String message) {
@@ -51,6 +57,30 @@ public class SocketAPI {
             }
 
         };
+        if(this.joueBlanc)
+            couleur = "blancs";
+        else
+            couleur = "noirs";
+        System.out.println(couleur);
+        this.sync = new WebSocketClient(new URI(server+"/ws/sync/"+id+"/"+couleur)) {
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+
+            }
+
+            @Override
+            public void onMessage(String message) {
+                System.out.println(message);
+                SocketAPI.this.data = message;
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {            }
+
+            @Override
+            public void onError(Exception e) {            }
+        };
+        sync.connect();
         ws.connect(); //ne pas l'oublier ...
     }
 
@@ -85,5 +115,25 @@ public class SocketAPI {
         while(tour.equals("blancs") != joueBlanc) //tour.equals("blancs") renvoie true ou false, et on arrête d'attendre si cette valeur correspond à la couleur
             tour = receive();                    // jouée par le joueur
 
+    }
+
+    public Pion[] waitGet() {
+        while (this.data.equals("")) {
+            try {
+                Thread.sleep(50);
+                System.out.print(".");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Pion[] pions = gson.fromJson(this.data, Pion[].class);
+        this.data = "";
+        return pions;
+    }
+
+    public void post(Pion[] pions) {
+        this.sync.send(gson.toJson(pions));
+        System.out.println("envoyé");
+        System.out.println(gson.toJson(pions));
     }
 }

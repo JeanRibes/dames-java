@@ -8,10 +8,10 @@ public class LesDames {
      */
     public static void main(String[] args) throws IOException, URISyntaxException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
-        Rest api = new Rest("https://api.ribes.me"); //crée une connection
+        //Rest api = new Rest("https://api.ribes.me"); //crée une connection
 
         System.out.println("Lancement...");
-        //Rest api = new Rest("http://localhost");
+        Rest api = new Rest("http://localhost:8000");
         Pion[] pions;
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
@@ -27,20 +27,20 @@ public class LesDames {
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
         input.reset(plateau.taille);
         plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
-        plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
-        //int[] pos = input.getPos(plateau); //va afficher le plateau et demander une position
-        //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
-        //SocketAPI ws = new SocketAPI("wss://localhost", api.getId());
-        SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId());
+        //plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
+
+        SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
+        //SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId());
         //ws.test();
         while(pionsVivants(pions)>1){
             /*while(!api.aQuiLeTour()) {
                 System.out.print(".");
                 Thread.sleep(3000);
             }*/
-            ws.attendreTour(joueBlanc);
+            //ws.attendreTour(joueBlanc);
 
-            pions = api.get();
+            //pions = api.get();
+            pions = ws.waitGet();
             System.out.println("Reçu");
 
             plateau.afficher(pions);
@@ -51,9 +51,16 @@ public class LesDames {
             action(pions, plateau, input);
             plateau.afficher(pions);
 
-            api.post(pions);
+            //api.post(pions);
             System.out.println("Envoi");
-            api.aToiLeTour();
+            ws.post(pions);
+            /*try {
+                Thread.sleep(3000); //c'est pour éviter la desynch
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ws.data="";*/
+            //api.aToiLeTour();
         }
 
 
