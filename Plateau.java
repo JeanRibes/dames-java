@@ -78,7 +78,7 @@ public class Plateau {
     /**
      * Cette m&eacute;thode va ins&eacute;rer les pions dans les cases, pour faciliter l'affichage
      * note: elle n'envoie pas les pions morts &agrave; l'affichage
-     * @param pions
+     * @param pions un tableau d'objets Pion qui représente l'état du jeu à actualiser
      */
     public void update(Pion[] pions) {
         for (Case[] ligne: this.cases) {

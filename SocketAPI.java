@@ -7,8 +7,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Cette classe fournit des méthodes pour recevoir & attendre des données depuis un WebSocket
- * la connection au serveur n'a pas besoin d'être ré-étableie à chaque fois, et le serveur peut push les infos
+ * Cette classe fournit des m&eacute;thodes pour recevoir & attendre des donn&eacute;es depuis un WebSocket
+ * la connection au serveur n'a pas besoin d'&ecirc;tre r&eacute;-&eacute;tablie &agrave; chaque fois, et le serveur peut push les infos
  */
 public class SocketAPI {
     public GsonBuilder builder;
@@ -19,10 +19,9 @@ public class SocketAPI {
     public String couleur;
 
     /**
-     *
-     * @param server URI Websocket de la forme ws://example.com ou wss://secure.com
-     * @param id l'id de la partie reçu de RestAPI
-     * @param joueBlanc booléean valant true si le mec joue les blancs
+     * @param server    URI Websocket de la forme ws://example.com ou wss://secure.com
+     * @param id        l'id de la partie re&ccedil;u de RestAPI
+     * @param joueBlanc bool&eacute;ean valant true si le mec joue les blancs
      */
     public SocketAPI(String server, String id, boolean joueBlanc) throws URISyntaxException {
         this.builder = new GsonBuilder();
@@ -39,7 +38,7 @@ public class SocketAPI {
         this.sync = new WebSocketClient(new URI(server + "/ws/sync/" + id + "/" + couleur)) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
-                System.out.println("opened connection");
+                //System.out.println("opened connection");
             }
 
             @Override
@@ -63,9 +62,11 @@ public class SocketAPI {
         };
         sync.connect(); //ne pas l'oublier ...
     }
+
     /**
-     * Attend jusqu'à la fin du tour de l'autre joueur
-     * reçoit les pions du serveur via websockets
+     * Attend jusqu'&agrave; la fin du tour de l'autre joueur
+     * re&ccedil;oit les pions du serveur via websockets
+     *
      * @return le tableau 1D des pions
      */
     public Pion[] waitGet() {
@@ -84,6 +85,7 @@ public class SocketAPI {
 
     /**
      * Envoie les pions au serveur via websockets
+     *
      * @param pions le tableau des pions
      */
     public void post(Pion[] pions) {

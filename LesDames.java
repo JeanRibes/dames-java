@@ -16,39 +16,43 @@ public class LesDames {
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
-            pions = RemplirPlateau(plateau, 20);
+            pions = RemplirPlateau(plateau, 1);
             joueBlanc = true;
             api.post(pions);
-            api.aToiLeTour();
+            //api.aToiLeTour();
         } else {
-            pions = api.get(); // reçoit les pions depuis le serveur
+            //pions = api.get(); // reçoit les pions depuis le serveur
             joueBlanc = false;
         }
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
         input.reset(plateau.taille-1);
-        plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         //plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
 
         //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
         SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
+        pions = ws.waitGet();
         while(pionsVivants(pions)>1){
-            pions = ws.waitGet(); //attend jusqu'à la fin du tour de l'autre (donc jusqu'à réception des donées)
-
             System.out.println("À vous!");
             plateau.update(pions);
-            if (joueBlanc) //lol je me suis déjà mélangé !
-                System.out.println("VOUS JOUEZ BLANCS");
-            else
-                System.out.println("VOUS JOUEZ NOIRS");
+
             action(pions, plateau, input);
             plateau.afficher(pions);
 
-            System.out.println("Attendez");
             ws.post(pions);
+
+            System.out.println("Attendez l'autre joueur");
+            pions = ws.waitGet(); //attend jusqu'à la fin du tour de l'autre (donc jusqu'à réception des données)
         }
+        ws.post(pions); //sinon waitGet fait attendre la boucle et ne reçoit jamais les data de l'autre joueur
+        ws.sync.close();
+        if(joueBlanc)
+            api.supprPartie();
+        System.out.println("bravo !");
 
 
         input.close(); //à mettre TOUT à la fin
+        System.exit(0);
     }
 
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {

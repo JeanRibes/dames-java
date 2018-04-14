@@ -151,7 +151,7 @@ public class Input {
                 System.out.println("Veuillez séléctionner une case blanche !");
 
         } while (plateau.getPlateau()[pos[1]][pos[0]].isNoir());
-        System.out.println(curX + " " + curY);
+        //System.out.println(curX + " " + curY);
         return pos;
     }
 
