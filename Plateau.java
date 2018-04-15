@@ -31,23 +31,27 @@ public class Plateau {
      * @param posCurseur un tableau d'entiers [X,Y]
      */
     public void afficherPlateau(int[] posCurseur) {
-        System.out.println("-----------------------------------------");
+        //System.out.println("-----------------------------------------");
+        System.out.println("┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐");
         for (int y=0;y<this.cases.length; y++) {
             for(int x=0; x<this.cases[y].length; x++) {
                 Case cetteCase = this.cases[y][x];
-                if(x == posCurseur[0] && y == posCurseur[1]) { //le selectionnecurseur est sur la case
-                    System.out.print("|C"+cetteCase+"C");
+                if(x == posCurseur[0] && y == posCurseur[1]) { //le curseur est sur la case
+                    System.out.print("│["+cetteCase+"]");
                 }
                 else{
                     if(cetteCase.isBlanc())
-                        System.out.print("|░"+cetteCase+"░");
+                        System.out.print("│░"+cetteCase+"░");
                     else
-                        System.out.print("|   ");
+                        System.out.print("│   ");
 
                 }
             }
-            System.out.println("|");
-            System.out.println("-----------------------------------------");
+            System.out.println("│");
+            if(y!=this.cases.length-1)
+                System.out.println("├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤");
+            else
+                System.out.println("└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘");
         }
     }
 
@@ -57,18 +61,7 @@ public class Plateau {
      */
     public void afficher(Pion[] pions) {
         this.update(pions);
-        System.out.println("-----------------------------------------");
-        for (Case[] aCase : this.cases) {
-            for (int x = 0; x < aCase.length; x++) {
-                Case cetteCase = aCase[x];
-                if (cetteCase.isBlanc())
-                    System.out.print("|░" + cetteCase + "░");
-                else
-                    System.out.print("|   ");
-            }
-            System.out.println("|");
-            System.out.println("-----------------------------------------");
-        }
+        afficherPlateau(new int[]{-1, -1}); //petit hack pour ne pas avoir à copier/coller du code
     }
 
     public Case[][] getPlateau() {

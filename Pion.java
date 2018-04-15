@@ -51,22 +51,41 @@ public class Pion {
     }
 
     public String toString() {
-        if (this.selectionne) {
-            return "@";
-        } else {
-            if (this.typePion.equals("pion")) {
-                if (blanc)
-                    return "◯";
-                else
-                    return "◉";
+        if (System.getProperty("os.name") == "Linux") {
+            if (this.selectionne) {
+                return "@";
             } else {
-                if (this.typePion.equals("dame")) { //une Dame
-                    if (blanc)
-                        return "▢";
+                if (this.typePion.equals("pion")) {
+                    if (!blanc)
+                        return "◯";
                     else
-                        return "▣";
+                        return "◉";
+                } else {
+                    if (this.typePion.equals("dame")) { //une Dame
+                        if (!blanc)
+                            return "▢";
+                        else
+                            return "▣";
+                    } else return "x";
                 }
-                else return "x";
+            }
+        } else {
+            if (this.selectionne) {
+                return "@";
+            } else {
+                if (this.typePion.equals("pion")) {
+                    if (blanc)
+                        return "b";
+                    else
+                        return "n";
+                } else {
+                    if (this.typePion.equals("dame")) { //une Dame
+                        if (blanc)
+                            return "B";
+                        else
+                            return "N";
+                    } else return "x";
+                }
             }
         }
     }
@@ -81,6 +100,7 @@ public class Pion {
     public void selectionner() { //pour montrer visuellement que ce pion va être bougé par le joueur
         this.selectionne = true;
     }
+
     public void deselectionner() {
         this.selectionne = false;
     }
