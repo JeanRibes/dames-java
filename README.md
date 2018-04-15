@@ -4,6 +4,7 @@ Jeu de dames en Java, interface terminal
 il faut les biliothèques [JNA](http://central.maven.org/maven2/com/sun/jna/jna/3.0.9/jna-3.0.9.jar)
 et [JNA-platform](http://central.maven.org/maven2/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar)
 ainsi que [GSON](http://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar)
+et [JavaWebsockets](https://github.com/TooTallNate/Java-WebSocket/releases/download/v1.3.8/Java-WebSocket-1.3.8.jar)
 pour compiler, faire ``javac -cp .:jline.jar:gson-2.8.2.jar LesDames.java``
 
 pour compiler, faire ``javac java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;.\ LesDames.java``
