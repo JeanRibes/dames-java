@@ -38,7 +38,7 @@ class Plateau {
 
                 }
             }
-            System.out.println("|");
+            System.out.println("│");
             if(y!=this.cases.length-1)
                 System.out.println("├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤");
             else

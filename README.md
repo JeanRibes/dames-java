@@ -6,6 +6,7 @@ il faut la bibliothèque Jline
 pour compiler, faire ``javac -cp .:/dossier/jline.jar LesDames.java``
 
 pour exécuter, ``java -cp .:/dossier/jline.jar LesDames``
+pour Windows: java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;. Affichage
 # Cahier des charges
 * Dans un premier temps, il faut créer un jeu fonctionnel dont les règles reposent sur l'utilisateur (pas de vérifications)
 * On veut un plateau de jeu, des pions, des dames, des cases de différentes couleurs (voir PDF moodle)
