@@ -1,12 +1,16 @@
 # dames-java
 Jeu de dames en Java, interface terminal
-# comment compiler ?
-il faut la bibliothèque Jline
+## comment compiler ?
+il faut les biliothèques [JNA](http://central.maven.org/maven2/com/sun/jna/jna/3.0.9/jna-3.0.9.jar)
+et [JNA-platform](http://central.maven.org/maven2/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar)
 
-pour compiler, faire ``javac -cp .:/dossier/jline.jar LesDames.java``
+pour compiler, faire ``javac java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;.\ LesDames.java``
 
-pour exécuter, ``java -cp .:/dossier/jline.jar LesDames``
-pour Windows: java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;. Affichage
+## Comment exécuter
+ Linux / OSX(?) ``java -cp .:/dossier/jline.jar LesDames``
+
+Windows: `java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;.\ LesDames
+`
 # Cahier des charges
 * Dans un premier temps, il faut créer un jeu fonctionnel dont les règles reposent sur l'utilisateur (pas de vérifications)
 * On veut un plateau de jeu, des pions, des dames, des cases de différentes couleurs (voir PDF moodle)
