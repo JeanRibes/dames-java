@@ -1,10 +1,12 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.TreeMap;
 
 /**
  * Cette classe fournit des m&eacute;thodes pour recevoir & attendre des donn&eacute;es depuis un WebSocket
@@ -17,6 +19,7 @@ public class SocketAPI {
     public WebSocketClient sync;
     public boolean joueBlanc;
     public String couleur;
+    public boolean spinner;
 
     /**
      * @param server    URI Websocket de la forme ws://example.com ou wss://secure.com
@@ -45,6 +48,11 @@ public class SocketAPI {
             public void onMessage(String message) {
                 //System.out.println(message);
                 SocketAPI.this.data = message;
+                try {
+                    Pion[] pions = gson.fromJson(SocketAPI.this.data, Pion[].class);
+                } catch (JsonParseException e) {
+                    System.out.println(SocketAPI.this.data);
+                }
             }
 
             @Override
@@ -70,16 +78,40 @@ public class SocketAPI {
      * @return le tableau 1D des pions
      */
     public Pion[] waitGet() {
+        /*spinner = true;
         while (this.data.equals("")) {
             try {
-                Thread.sleep(50);
-                System.out.print(".");
+                Thread.sleep(10);
+                if(spinner)
+                    joliTruc();
+                spinner = false;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            //if(!this.data.equals(""))
+        }*/
+        Thread spinner = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    spinner(true);
+                } catch (InterruptedException e) {}
+            }
+        });
+        spinner.start();
+        while (this.data.equals("")) {
+            //Thread.yield();
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {}
         }
+        spinner.interrupt();
+        //System.out.println("now stop");
+        //spinner.stop();
+
         Pion[] pions = gson.fromJson(this.data, Pion[].class);
         this.data = "";
+        System.out.println("");
         return pions;
     }
 
@@ -93,4 +125,117 @@ public class SocketAPI {
         //System.out.println("envoyé");
         //System.out.println(gson.toJson(pions));
     }
+
+    public void joliTruc() {
+        new Thread(()->{
+            try {
+                //System.out.println(Thread.currentThread().getName());
+                System.out.print("\r[/]  [<->      ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [ <->     ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [  <->    ]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [   <->   ]");
+                Thread.sleep(100);
+                System.out.print("\r[/]  [    <->  ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [     <-> ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [      <->]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [     <-> ]");
+                Thread.sleep(100);
+                System.out.print("\r[/]  [    <->  ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [   <->   ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [  <->    ]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [ <->     ]");
+                Thread.sleep(100);
+                spinner = true;
+            } catch (InterruptedException e) {}
+        }).start();
+
+    }
+    public void spinner(boolean doSpin) throws InterruptedException {
+        while(doSpin) {
+            //System.out.println(Thread.currentThread().getName());
+            System.out.print("\r[/]  [<->      ]");
+            Thread.sleep(100);
+            System.out.print("\r[|]  [ <->     ]");
+            Thread.sleep(100);
+            System.out.print("\r[\\]  [  <->    ]");
+            Thread.sleep(100);
+            System.out.print("\r[-]  [   <->   ]");
+            Thread.sleep(100);
+            System.out.print("\r[/]  [    <->  ]");
+            Thread.sleep(100);
+            System.out.print("\r[|]  [     <-> ]");
+            Thread.sleep(100);
+            System.out.print("\r[\\]  [      <->]");
+            Thread.sleep(100);
+            System.out.print("\r[-]  [     <-> ]");
+            Thread.sleep(100);
+            System.out.print("\r[/]  [    <->  ]");
+            Thread.sleep(100);
+            System.out.print("\r[|]  [   <->   ]");
+            Thread.sleep(100);
+            System.out.print("\r[\\]  [  <->    ]");
+            Thread.sleep(100);
+            System.out.print("\r[-]  [ <->     ]");
+            Thread.sleep(100);
+        }
+    }
 }
+
+class JoliTruc extends Thread {
+    public boolean doSpin;
+    public boolean doitStop;
+
+    public JoliTruc(){
+        doSpin = true;
+    }
+
+    public void arreter(){
+        System.out.println("stop"+Thread.currentThread().getName());
+        doSpin = false;
+        System.out.println("arret");
+        //Thread.currentThread().stop();
+
+    }
+    @Override
+    public void run() {
+        System.out.println("run"+Thread.currentThread().getName());
+        try {
+            while(doSpin) {
+                //System.out.println(Thread.currentThread().getName());
+                System.out.print("\r[/]  [<->      ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [ <->     ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [  <->    ]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [   <->   ]");
+                Thread.sleep(100);
+                System.out.print("\r[/]  [    <->  ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [     <-> ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [      <->]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [     <-> ]");
+                Thread.sleep(100);
+                System.out.print("\r[/]  [    <->  ]");
+                Thread.sleep(100);
+                System.out.print("\r[|]  [   <->   ]");
+                Thread.sleep(100);
+                System.out.print("\r[\\]  [  <->    ]");
+                Thread.sleep(100);
+                System.out.print("\r[-]  [ <->     ]");
+                Thread.sleep(100);
+            }
+    } catch (InterruptedException e) {}
+    }
+        }

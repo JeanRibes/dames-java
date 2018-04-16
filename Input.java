@@ -1,43 +1,25 @@
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
-
 import java.io.IOException;
-import java.io.Reader;
 
 /**
  * Classe permettant de simplifier l'interfa&ccedil;age avec l'utilisateur
  * jline est tr&egrave;s peu utilis&eacute;, c'est uniquement pour avoir les codes clavier sans que l'utilisateur appuie sur enter
  */
 public class Input {
-    public Reader reader;
-    public Terminal terminal;
     public int curX;
     public int curY;
 
-    /**
-     * Constructeur qui va afficher &agrave; l'&eacute;cran des instructions pour la s&eacute;l&eacute;ction lorqu'on l'appellera
-     * Il ne prend pas d'argument
-     */
-    public Input() throws IOException {
+    public Input()  {
         this.curX = 0;
         this.curY = 0;
-        this.terminal = TerminalBuilder.builder()
-                .jna(true)
-                .system(true)
-                .build();
-        System.out.println("Pour séléctionner un pion, duex méthodes sont disponibles :");
+        System.out.println("Pour séléctionner un pion, dux méthodes sont disponibles :");
         System.out.println("* flèches du clavier puis entrée");
         System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour se déplacer et Esapce pour valider");
         System.out.println("    et entre chaque touche il faudra appuyer sur enter");
 
-// raw mode means we get keypresses rather than line buffered input
-        this.terminal.enterRawMode();
-        this.reader = terminal.reader();
     }
 
     public void close() throws IOException {
-        this.reader.close();
-        this.terminal.close();
+        RawConsoleInput.resetConsoleMode();
     }
 
     /**
@@ -56,7 +38,7 @@ public class Input {
      */
     public String getKeyCode() {
         try {
-            int code = reader.read();
+            int code = RawConsoleInput.read(true);
             while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
                 switch (code) {
                     case 65:
@@ -75,22 +57,34 @@ public class Input {
                         return "RIGHT";
                     case 115:
                         return "UP";
+                    case 57416: //windows
+                        return "DOWN";
+                    case 57419:
+                        return "LEFT";
+                    case 57421:
+                        return "RIGHT";
+                    case 57424:
+                        return "UP";
                     case 27:
                         break; //pour enlever les codes envoyés avant les flèches (sur linux)
                     case 91:
                         break;
                     case 10:
                         break;
+                    case 3: //CTRL+C sur Windows qui est échappé
+                        System.exit(0);
                     //noinspection ConstantConditions
                     case 32:
                         return "ENTER";
                     default:
                         System.out.println("Espace ou Entrée pour valider, et pour se déplacer");
-                        System.out.println("flèches ou ZQSD >");
+                        System.out.print("flèches ou ZQSD >");
+                        System.out.println(code);
 
                 }
-                code = reader.read();
+                code = RawConsoleInput.read(true);
             }
+            RawConsoleInput.resetConsoleMode();
             return "ENTER";
         } catch (IOException e) {
             System.out.println("Erreur interne");
