@@ -39,8 +39,8 @@ public class Input {
     public String getKeyCode() {
         try {
             int code = RawConsoleInput.read(true);
-            //while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
-            while (true) { //32=SPACE, 13=ENTER
+            //while (true) {
+            while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
                 switch (code) {
                     case 65:
                         return "DOWN";
@@ -87,7 +87,7 @@ public class Input {
                 code = RawConsoleInput.read(true);
             }
             //RawConsoleInput.resetConsoleMode();
-            //return "ENTER";
+            return "ENTER";
         } catch (IOException e) {
             System.out.println("Erreur interne");
             e.printStackTrace();
@@ -155,8 +155,8 @@ public class Input {
      * S&eacute;l&eacute;ctionne un pion et effectue les v&eacute;rification.
      * Cette m&eacute;thode "surcharge" getPos
      * @see #getPos(Plateau)
-     * @param plateau
-     * @return
+     * @param plateau une instance
+     * @return la position [x,y]
      */
     public int[] selectPion(Plateau plateau) { // pour séléctionner les coordonnées d'un pion
         int[] pos = getPos(plateau);

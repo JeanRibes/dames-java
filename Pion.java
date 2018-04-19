@@ -51,7 +51,7 @@ public class Pion {
     }
 
     public String toString() {
-        if (System.getProperty("os.name") == "Linux") {
+        if (System.getProperty("os.name").equals("Linux")) {
             if (this.selectionne) {
                 return "@";
             } else {

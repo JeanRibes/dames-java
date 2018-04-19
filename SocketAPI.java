@@ -6,6 +6,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 /**
@@ -99,6 +100,8 @@ public class SocketAPI {
                 } catch (InterruptedException e) {}
             }
         });
+        Chat chat = new Chat(this.sync);
+        chat.start();
         spinner.start();
         while (this.data.equals("")) {
             //Thread.yield();
@@ -106,6 +109,7 @@ public class SocketAPI {
                 Thread.sleep(50);
             } catch (InterruptedException e) {}
         }
+        chat.stop();
         spinner.interrupt();
         //System.out.println("now stop");
         //spinner.stop();
@@ -163,29 +167,29 @@ public class SocketAPI {
     public void spinner(boolean doSpin) throws InterruptedException {
         while(doSpin) {
             //System.out.println(Thread.currentThread().getName());
-            System.out.print("\r[/]  [<->      ]");
+            System.out.print("\r[/]  [<->      ] ");
             Thread.sleep(100);
-            System.out.print("\r[|]  [ <->     ]");
+            System.out.print("\r[|]  [ <->     ] ");
             Thread.sleep(100);
-            System.out.print("\r[\\]  [  <->    ]");
+            System.out.print("\r[\\]  [  <->    ] ");
             Thread.sleep(100);
-            System.out.print("\r[-]  [   <->   ]");
+            System.out.print("\r[-]  [   <->   ] ");
             Thread.sleep(100);
-            System.out.print("\r[/]  [    <->  ]");
+            System.out.print("\r[/]  [    <->  ] ");
             Thread.sleep(100);
-            System.out.print("\r[|]  [     <-> ]");
+            System.out.print("\r[|]  [     <-> ] ");
             Thread.sleep(100);
-            System.out.print("\r[\\]  [      <->]");
+            System.out.print("\r[\\]  [      <->] ");
             Thread.sleep(100);
-            System.out.print("\r[-]  [     <-> ]");
+            System.out.print("\r[-]  [     <-> ] ");
             Thread.sleep(100);
-            System.out.print("\r[/]  [    <->  ]");
+            System.out.print("\r[/]  [    <->  ] ");
             Thread.sleep(100);
-            System.out.print("\r[|]  [   <->   ]");
+            System.out.print("\r[|]  [   <->   ] ");
             Thread.sleep(100);
-            System.out.print("\r[\\]  [  <->    ]");
+            System.out.print("\r[\\]  [  <->    ] ");
             Thread.sleep(100);
-            System.out.print("\r[-]  [ <->     ]");
+            System.out.print("\r[-]  [ <->     ] ");
             Thread.sleep(100);
         }
     }
@@ -239,4 +243,34 @@ class JoliTruc extends Thread {
             }
     } catch (InterruptedException e) {}
     }
+}
+class Chat extends Thread {
+    public WebSocketClient sync;
+    public Scanner sc;
+    public Chat(WebSocketClient sync) {
+        this.sync=sync;
+    }
+    @Override
+    public void run() {
+        System.out.print("                ");
+        while (this.sc.hasNextLine()) {
+            String texte = sc.nextLine();
+            if(texte.equals("stop"))
+                System.exit(0);
+            this.sync.send(texte);
+            System.out.println(texte);
         }
+    }
+
+    @Override
+    public synchronized void start() {
+        this.sc = new Scanner(System.in);
+        super.start();
+    }
+
+    @Override
+    public void interrupt() {
+        this.sc = null;
+        super.interrupt();
+    }
+}
