@@ -16,7 +16,7 @@ public class LesDames {
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
-            pions = RemplirPlateau(plateau, 1);
+            pions = RemplirPlateau(plateau, 20);
             joueBlanc = true;
             api.post(pions);
             //api.aToiLeTour();
@@ -32,6 +32,7 @@ public class LesDames {
         //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
         SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
         pions = ws.waitGet();
+        System.out.println("Attendez un autre joueur");
         while(pionsVivants(pions)>1){
             System.out.println("À vous!");
             plateau.update(pions);
@@ -113,7 +114,7 @@ public class LesDames {
      * @return vrai si le joueur joue les pions blancs
      */
     public static boolean utiliserLobby(Rest api) { //retourne TRUE si le joueur joue les pions blancs
-        System.out.println("Tapez un pseudo pour jouer en ligne");
+        System.out.print("Tapez un pseudo pour jouer en ligne > ");
         Scanner sc = new Scanner(System.in);
         String nom = sc.nextLine();
         api.getLobby();
@@ -121,11 +122,11 @@ public class LesDames {
             System.out.println(api.lobby[i].player1 + " #" + i);
         }
         System.out.println("Créer une partie : #-1");
-        System.out.println("Faites votre choix : (entrez un nombre) >");
+        System.out.print("Faites votre choix : (entrez un nombre) > ");
         int choix = sc.nextInt();
         if (choix >= 0) {
-            System.out.println("OUI");
-            System.out.println(api.lobby[choix].player1);
+            //System.out.println("OUI");
+            //System.out.println(api.lobby[choix].player1);
             api.rejoindre(api.lobby[choix].id, nom);
             return false;
         } else {

@@ -185,7 +185,7 @@ public class Rest {
                     (conn.getInputStream())));
 
             this.token = br.readLine();
-            System.out.println(token);
+            //System.out.println(token);
 
             conn.disconnect();
 
@@ -262,7 +262,7 @@ public class Rest {
                     (conn.getInputStream())));
 
             this.token = br.readLine();
-            System.out.println(token);
+            //System.out.println(token);
 
         } catch (MalformedURLException e) {
             System.out.println("URL incorrecte");

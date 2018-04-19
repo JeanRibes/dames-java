@@ -7,7 +7,7 @@ public class Affichage{
     public static void main(String[] args) throws IOException {
         //RawConsoleInput input = new RawConsoleInput();
         String key = "";
-        while(!key.equals("ENTER")) {
+        while(!key.equals("UP")) {
             key = getKeyCode();
             System.out.println(key);
         }
@@ -19,7 +19,7 @@ public class Affichage{
         try {
             int code = RawConsoleInput.read(true);
             while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
-                System.out.println(code);
+                //System.out.println(code);
                 switch (code) {
                     case 65:
                         return "DOWN";
@@ -50,8 +50,10 @@ public class Affichage{
                     case 91:
                         break;
                     case 10:
-                        break;
+                        return "ENTER";
                     //noinspection ConstantConditions
+                    case 3:
+                        System.exit(0);
                     case 32:
                         return "ENTER";
                     default:

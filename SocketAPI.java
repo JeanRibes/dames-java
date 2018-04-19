@@ -52,6 +52,7 @@ public class SocketAPI {
                     Pion[] pions = gson.fromJson(SocketAPI.this.data, Pion[].class);
                 } catch (JsonParseException e) {
                     System.out.println(SocketAPI.this.data);
+                    SocketAPI.this.data = ""; //pour un chat tout dégeu et plutôt hacké
                 }
             }
 

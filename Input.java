@@ -11,9 +11,9 @@ public class Input {
     public Input()  {
         this.curX = 0;
         this.curY = 0;
-        System.out.println("Pour séléctionner un pion, dux méthodes sont disponibles :");
+        System.out.println("Pour séléctionner un pion, deux méthodes sont disponibles :");
         System.out.println("* flèches du clavier puis entrée");
-        System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour se déplacer et Esapce pour valider");
+        System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour vous déplacer et Espace pour valider,");
         System.out.println("    et entre chaque touche il faudra appuyer sur enter");
 
     }
@@ -39,7 +39,8 @@ public class Input {
     public String getKeyCode() {
         try {
             int code = RawConsoleInput.read(true);
-            while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
+            //while (!(code == 13 || code == 32)) { //32=SPACE, 13=ENTER
+            while (true) { //32=SPACE, 13=ENTER
                 switch (code) {
                     case 65:
                         return "DOWN";
@@ -70,9 +71,10 @@ public class Input {
                     case 91:
                         break;
                     case 10:
-                        break;
+                        return "ENTER";
                     case 3: //CTRL+C sur Windows qui est échappé
                         System.exit(0);
+                        break;
                     //noinspection ConstantConditions
                     case 32:
                         return "ENTER";
@@ -84,8 +86,8 @@ public class Input {
                 }
                 code = RawConsoleInput.read(true);
             }
-            RawConsoleInput.resetConsoleMode();
-            return "ENTER";
+            //RawConsoleInput.resetConsoleMode();
+            //return "ENTER";
         } catch (IOException e) {
             System.out.println("Erreur interne");
             e.printStackTrace();
