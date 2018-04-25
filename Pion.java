@@ -39,8 +39,13 @@ public class Pion {
             this.coordX = newpos[0];
             this.coordY = newpos[1];
             this.selectionne = false;
-        } else
+        } else {
             System.out.println("Il faut une coordonnée X et Y pour bouger");
+        }
+        if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
+            this.typePion = "dame";
+            System.out.println("Vous avez une dame!!!");
+        }
     }
 
     public void mange(Pion cible) {
