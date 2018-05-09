@@ -73,11 +73,11 @@ public class LesDames {
         Pion pion = plateau.getPionDepuisCase(pos);
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
         pos = input.getPos(plateau);
-        vide:
+        vide: //pour break correctement la boucle secondement supérieure
         if (plateau.estVide(pos)) {
             boolean reussi = pion.bouge(pos);
             while (!reussi) {
-                System.out.println("Ne truchez pas");
+                System.out.println("Ne trichez pas");
                 pos = input.getPos(plateau);
                 //pos = input.selectCase(plateau);
                 pion.bouge(pos);
@@ -87,7 +87,11 @@ public class LesDames {
             while (cible.blanc == pion.blanc) { //tant qu'il choisit des pions alliés
                 pos = input.getPos(plateau);
                 if(plateau.estVide(pos)) { //le joueur peut choisir une case vide après avoir essayé de manger ses alliés
-                    pion.bouge(pos);
+                    boolean reussi = pion.bouge(pos);
+                    while (!reussi) {
+                        System.out.println("Faut pas tricher !");
+                        reussi = pion.bouge(pos);
+                    }
                     break vide; //si la case est vide, on sort du "if" et on termine
                 }
                 cible = plateau.getPionDepuisCase(pos);
