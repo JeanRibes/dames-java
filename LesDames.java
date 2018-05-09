@@ -66,6 +66,7 @@ public class LesDames {
         }
         return returned;
     }
+    
     public static void action(Pion[] pions, Plateau plateau, Input input) {
         System.out.println("Séléctionnez un pion à bouger");
         int[] pos = input.selectPion(plateau);

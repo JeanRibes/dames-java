@@ -53,6 +53,10 @@ public class Pion {
         this.coordY = cible.getY();
         this.selectionne = false;
         cible.setTypePion("mort");
+        if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
+            this.typePion = "dame";
+            System.out.println("Vous avez une dame!!!");
+        }
     }
 
     public String toString() {
