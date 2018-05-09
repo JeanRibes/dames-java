@@ -36,14 +36,14 @@ public class Pion {
 
     public boolean bouge(int[] newpos) {
         boolean reussi = false;
-        if (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2))) {
+        if (this.typePion.equals("pion") && (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2)))) {
             this.coordX = newpos[0];
             this.coordY = newpos[1];
             this.selectionne = false;
             System.out.println("Pion BLANC, descend");
             reussi = true;
         } else {
-            if (this.blanc == false && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] <= this.coordY && newpos[1] < (this.coordY + 2))) {
+            if (this.typePion.equals("pion") && (this.blanc == false && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] <= this.coordY && newpos[1] < (this.coordY + 2)))) {
                 this.coordX = newpos[0];
                 this.coordY = newpos[1];
                 this.selectionne = false;
@@ -51,6 +51,13 @@ public class Pion {
                 reussi = true;
             }
         }
+        if (typePion.equals("dame") && ((newpos[0] != this.coordX) && newpos[1] != this.coordY)) { // On bloque pas les diagonales, le joueur est intelligent sa mère.
+            this.coordX = newpos[0];
+            this.coordY = newpos[1];
+            this.selectionne = false;
+            reussi = true;
+        }
+
         if (reussi && (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0)))) { //Taille commençant à 0 donc 9
             this.typePion = "dame";
             System.out.println("Vous avez une dame!!!");
@@ -70,6 +77,9 @@ public class Pion {
         if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
             this.typePion = "dame";
             System.out.println("Vous avez une dame!!!");
+        }
+        if (this.typePion.equals("pion")){
+
         }
     }
 
