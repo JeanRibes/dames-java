@@ -36,13 +36,15 @@ public class Pion {
 
     public boolean bouge(int[] newpos) {
         boolean reussi = false;
-        if (this.typePion.equals("pion") && (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2)))) {
+        if (this.typePion.equals("pion") && (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <=
+                (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2)))) {
             this.coordX = newpos[0];
             this.coordY = newpos[1];
             this.selectionne = false;
             System.out.println("Pion BLANC, descend");
             reussi = true;
-        } else {
+        }
+        else {
             if (this.typePion.equals("pion") && (this.blanc == false && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] <= this.coordY && newpos[1] < (this.coordY + 2)))) {
                 this.coordX = newpos[0];
                 this.coordY = newpos[1];
@@ -62,25 +64,28 @@ public class Pion {
             this.typePion = "dame";
             System.out.println("Vous avez une dame!!!");
             return true;
-        } else {
-            System.out.println("Il faut une coordonnée X et Y pour bouger");
+        }
+        else {
+            System.out.println("Position invalide");
+            for(int i: newpos)
+                System.out.println(i);
             return reussi;
         }
     }
 
 
-    public void mange(Pion cible) {
-        this.coordX = cible.getX();
-        this.coordY = cible.getY();
+    public boolean mange(Pion cible) {
         this.selectionne = false;
-        cible.setTypePion("mort");
-        if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
-            this.typePion = "dame";
-            System.out.println("Vous avez une dame!!!");
+        if (this.bouge(cible.getPos())) {
+            cible.setTypePion("mort");
+            if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
+                this.typePion = "dame";
+                System.out.println("Vous avez une dame!!!");
+            }
+            return true;
         }
-        if (this.typePion.equals("pion")){
-
-        }
+        else
+            return false;
     }
 
     public String toString() {

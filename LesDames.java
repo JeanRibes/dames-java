@@ -16,8 +16,8 @@ public class LesDames {
 
         //bougerPion(pions, plateau, input);
 
-        while(pionsVivants(pions)>1){
-            action(pions, plateau, input);
+        while (pionsVivants(pions) > 1) {
+            action2(pions, plateau, input);
         }
 
 
@@ -51,10 +51,10 @@ public class LesDames {
         System.out.println("Séléctionnez un pion à bouger");
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
-        System.out.println("Pion en x="+pion.getX()+" y="+pion.getY()+" séléctionné");
+        System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné");
         pos = input.selectCase(plateau);
         pion.bouge(pos);
-        System.out.println("Pion bougé en x="+pion.getX()+" y="+pion.getY());
+        System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
         plateau.afficher(pions);
     }
 
@@ -66,14 +66,15 @@ public class LesDames {
         }
         return returned;
     }
-    
+
     public static void action(Pion[] pions, Plateau plateau, Input input) {
         System.out.println("Séléctionnez un pion à bouger");
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
         pos = input.getPos(plateau);
-        vide: //pour break correctement la boucle secondement supérieure
+        vide:
+        //pour break correctement la boucle secondement supérieure
         if (plateau.estVide(pos)) {
             boolean reussi = pion.bouge(pos);
             while (!reussi) {
@@ -86,7 +87,7 @@ public class LesDames {
             Pion cible = plateau.getPionDepuisCase(pos);
             while (cible.blanc == pion.blanc) { //tant qu'il choisit des pions alliés
                 pos = input.getPos(plateau);
-                if(plateau.estVide(pos)) { //le joueur peut choisir une case vide après avoir essayé de manger ses alliés
+                if (plateau.estVide(pos)) { //le joueur peut choisir une case vide après avoir essayé de manger ses alliés
                     boolean reussi = pion.bouge(pos);
                     while (!reussi) {
                         System.out.println("Faut pas tricher !");
@@ -105,11 +106,30 @@ public class LesDames {
     }
 
     public static int pionsVivants(Pion[] pions) {
-        int n=0;
-        for(Pion pion: pions) {
-            if(!pion.getTypePion().equals("mort"))
-                n+=1;
+        int n = 0;
+        for (Pion pion : pions) {
+            if (!pion.getTypePion().equals("mort"))
+                n += 1;
         }
         return n;
+    }
+
+    public static void action2(Pion[] pions, Plateau plateau, Input input) {
+        boolean reussi = false;
+        while (!reussi) {
+            Pion pion = input.getPion(plateau);
+            System.out.println("Maintenant choisissez une destination pour ce pion");
+            int pos[] = input.getPos(plateau);
+            if (plateau.estVide(pos)) {
+                System.out.println(reussi);
+                reussi = pion.bouge(pos);
+                System.out.println(reussi);
+            }
+            else { //case avec un pion
+                Pion cible = plateau.getPionDepuisCase(pos);
+                reussi = pion.mange(cible);
+            }
+        }
+
     }
 }
