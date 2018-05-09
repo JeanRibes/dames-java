@@ -74,9 +74,15 @@ public class LesDames {
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
         pos = input.getPos(plateau);
         vide:
-        if (plateau.estVide(pos))
-            pion.bouge(pos);
-        else {
+        if (plateau.estVide(pos)) {
+            boolean reussi = pion.bouge(pos);
+            while (!reussi) {
+                System.out.println("Ne truchez pas");
+                pos = input.getPos(plateau);
+                //pos = input.selectCase(plateau);
+                pion.bouge(pos);
+            }
+        } else {
             Pion cible = plateau.getPionDepuisCase(pos);
             while (cible.blanc == pion.blanc) { //tant qu'il choisit des pions alliés
                 pos = input.getPos(plateau);
