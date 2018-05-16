@@ -118,18 +118,23 @@ public class LesDames {
         boolean reussi = false;
         while (!reussi) {
             Pion pion = input.getPion(plateau);
+            pion.selectionner();
             System.out.println("Maintenant choisissez une destination pour ce pion");
             int pos[] = input.getPos(plateau);
             if (plateau.estVide(pos)) {
-                System.out.println(reussi);
                 reussi = pion.bouge(pos);
-                System.out.println(reussi);
+                if(!reussi)
+                    System.out.println("Action interdite, re-séléctionnez un pion");
             }
             else { //case avec un pion
                 Pion cible = plateau.getPionDepuisCase(pos);
                 reussi = pion.mange(cible);
+                if(!reussi)
+                    System.out.println("Action interdite, re-séléctionnez un pion");
             }
+            pion.selectionne = false;
         }
+        plateau.afficher(pions);
 
     }
 }
