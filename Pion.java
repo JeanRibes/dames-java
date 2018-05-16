@@ -43,8 +43,7 @@ public class Pion {
             this.selectionne = false;
             System.out.println("Pion BLANC, descend");
             reussi = true;
-        }
-        else {
+        } else {
             if (this.typePion.equals("pion") && (this.blanc == false && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] <= this.coordY && newpos[1] < (this.coordY + 2)))) {
                 this.coordX = newpos[0];
                 this.coordY = newpos[1];
@@ -64,28 +63,51 @@ public class Pion {
             this.typePion = "dame";
             System.out.println("Vous avez une dame!!!");
             return true;
-        }
-        else {
+        } else {
             System.out.println("Position invalide");
-            for(int i: newpos)
+            for (int i : newpos)
                 System.out.println(i);
             return reussi;
         }
     }
 
 
-    public boolean mange(Pion cible) {
+    public boolean mange(Pion cible, Plateau plateau) {
         this.selectionne = false;
         if (this.bouge(cible.getPos())) {
             cible.setTypePion("mort");
-            if (this.typePion.equals("pion") && ((this.blanc && this.coordY == 9) || (!this.blanc && this.coordY == 0))) { //Taille commençant à 0 donc 9
-                this.typePion = "dame";
-                System.out.println("Vous avez une dame!!!");
-            }
             return true;
-        }
-        else
+        } else
             return false;
+    }
+
+    public boolean verifmange(Pion cible, Plateau plateau) {
+        int pos1[] = {(this.coordX + 2), (this.coordY - 2)};
+        if ((this.coordX == cible.coordX - 1) && (this.coordY == cible.coordY + 1) && (plateau.estVide(pos1))) {
+            this.coordX += 2;
+            this.coordY -= 2;
+            System.out.println("Text");
+        }
+        int pos2[] = {(this.coordX - 2), (this.coordY - 2)};
+        if ((this.coordX == cible.coordX - 1) && (this.coordY == cible.coordY - 1) && (plateau.estVide(pos2))) {
+            this.coordX -= 2;
+            this.coordY -= 2;
+            System.out.println("Text");
+        }
+
+        int pos3[] = {(this.coordX + 2), (this.coordY + 2)};
+        if ((this.coordX == cible.coordX + 1) && (this.coordY == cible.coordY + 1) && (plateau.estVide(pos3))) {
+            this.coordX += 2;
+            this.coordY += 2;
+            System.out.println("Text");
+        }
+
+        int pos4[] = {(this.coordX - 2), (this.coordY + 2)};
+        if ((this.coordX == cible.coordX - 1) && (this.coordY == cible.coordY + 1) && (plateau.estVide(pos4))) {
+            this.coordX -= 2;
+            this.coordY += 2;
+            System.out.println("Text");
+        }
     }
 
     public String toString() {

@@ -98,7 +98,7 @@ public class LesDames {
                 cible = plateau.getPionDepuisCase(pos);
                 //cible = input.getPion(plateau);
             }
-            pion.mange(cible); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
+            pion.mange(cible, plateau); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
             plateau.afficher(pions);
         }
         System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
@@ -123,12 +123,13 @@ public class LesDames {
             int pos[] = input.getPos(plateau);
             if (plateau.estVide(pos)) {
                 reussi = pion.bouge(pos);
+                plateau.update(pions);
                 if(!reussi)
                     System.out.println("Action interdite, re-séléctionnez un pion");
             }
             else { //case avec un pion
                 Pion cible = plateau.getPionDepuisCase(pos);
-                reussi = pion.mange(cible);
+                reussi = pion.mange(cible, plateau);
                 if(!reussi)
                     System.out.println("Action interdite, re-séléctionnez un pion");
             }
