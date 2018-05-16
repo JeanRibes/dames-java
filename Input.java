@@ -3,8 +3,9 @@ import java.io.IOException;
 public class Input {
     public int curX;
     public int curY;
+    private int compteurKonami;
 
-    public Input()  {
+    public Input() {
         this.curX = 0;
         this.curY = 0;
         System.out.println("Pour séléctionner un pion, dux méthodes sont disponibles :");
@@ -12,6 +13,7 @@ public class Input {
         System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour se déplacer et Esapce pour valider");
         System.out.println("    et entre chaque touche il faudra appuyer sur enter");
 
+        compteurKonami = 0;
     }
 
     public void close() throws IOException {
@@ -52,6 +54,10 @@ public class Input {
                         return "RIGHT";
                     case 57424:
                         return "UP";
+                    case 97:
+                        return "A";
+                    case 98:
+                        return "B";
                     case 27:
                         break; //pour enlever les codes envoyés avant les flèches (sur linux)
                     case 91:
@@ -60,7 +66,7 @@ public class Input {
                         break;
                     case 3: //CTRL+C sur Windows qui est échappé
                         System.exit(0);
-                    //noinspection ConstantConditions
+                        //noinspection ConstantConditions
                     case 32:
                         return "ENTER";
                     default:
@@ -111,9 +117,10 @@ public class Input {
             while (!key.equals("ENTER")) {
                 pos = this.updatePos(plateau.taille, key);
                 plateau.afficherPlateau(pos);
+                konami(key);
                 key = this.getKeyCode();
             }
-            if(plateau.getPlateau()[pos[1]][pos[0]].isNoir())
+            if (plateau.getPlateau()[pos[1]][pos[0]].isNoir())
                 System.out.println("Veuillez séléctionner une case blanche !");
 
         } while (plateau.getPlateau()[pos[1]][pos[0]].isNoir());
@@ -133,12 +140,13 @@ public class Input {
 
     public int[] selectCase(Plateau plateau) { //pour séléctionner les coordonnées d'un case vide
         int[] pos = getPos(plateau);
-        while (plateau.hasPion(pos)){
+        while (plateau.hasPion(pos)) {
             System.out.println("Cette case est déjà occupée");
             pos = getPos(plateau);
         }
         return pos;
     }
+
     public Pion getPion(Plateau plateau) { //renvoie un pion sans le passer en "séléctionné"
         int[] pos = getPos(plateau);
         while (plateau.estVide(pos)) {
@@ -146,5 +154,51 @@ public class Input {
             pos = getPos(plateau);
         }
         return plateau.getPionDepuisCase(pos);
+    }
+
+    public void konami(String key){
+        switch (key){
+            case "DOWN": //flèche du haut
+                //System.out.println("haut");
+                if(compteurKonami<2)
+                    compteurKonami+=1;
+                else
+                    compteurKonami = 0;
+                break;
+            case "UP": //flcèhe du bas
+                //System.out.println("base");
+                if(compteurKonami==2 || compteurKonami ==3)
+                    compteurKonami+=1;
+                else
+                    compteurKonami = 0;
+                break;
+            case "LEFT":
+                //System.out.println("gauche");
+                if(compteurKonami == 4 || compteurKonami==6)
+                    compteurKonami+=1;
+                else
+                    compteurKonami=0;
+                break;
+            case "RIGHT":
+                //System.out.println("droite");
+                if(compteurKonami==5 || compteurKonami==7)
+                    compteurKonami+=1;
+                break;
+            case "B":
+                if(compteurKonami==8)
+                    compteurKonami+=1;
+                else
+                    compteurKonami=0;
+                break;
+            case "A":
+                if(compteurKonami==9) {
+                    for (int i = 0; i < 60; i++) {
+                        System.out.println("Vous avez truché");
+                    }
+                    System.exit(1);
+                }
+                else
+                    compteurKonami=0;
+        }
     }
 }
