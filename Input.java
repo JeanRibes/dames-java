@@ -1,4 +1,7 @@
+import sun.misc.Unsafe;
+
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class Input {
     public int curX;
@@ -195,10 +198,22 @@ public class Input {
                     for (int i = 0; i < 60; i++) {
                         System.out.println("Vous avez truché");
                     }
+                    try {
+                        getUnsafe().getByte(0);
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                     System.exit(1);
                 }
                 else
                     compteurKonami=0;
         }
+    }
+    private static Unsafe getUnsafe() throws NoSuchFieldException, IllegalAccessException {
+        Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+        theUnsafe.setAccessible(true);
+        return (Unsafe) theUnsafe.get(null);
     }
 }
