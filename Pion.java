@@ -81,7 +81,7 @@ public class Pion {
             return false;
     }
 
-    public boolean verifmange(Pion cible, Plateau plateau) {
+    public void verifmange(Pion cible, Plateau plateau) {
         int pos1[] = {(this.coordX + 2), (this.coordY - 2)};
         if ((this.coordX == cible.coordX - 1) && (this.coordY == cible.coordY + 1) && (plateau.estVide(pos1))) {
             this.coordX += 2;
