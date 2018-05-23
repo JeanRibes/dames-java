@@ -36,19 +36,16 @@ public class Pion {
 
     public boolean bouge(int[] newpos) {
         boolean reussi = false;
-        if (this.typePion.equals("pion") && (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <=
-                (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2)))) {
+        if (this.typePion.equals("pion") && (this.blanc == true && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] >= this.coordY && newpos[1] < (this.coordY + 2)))) {
             this.coordX = newpos[0];
             this.coordY = newpos[1];
             this.selectionne = false;
-            System.out.println("Pion BLANC, descend");
             reussi = true;
         } else {
             if (this.typePion.equals("pion") && (this.blanc == false && (newpos[0] >= (this.coordX - 1) && newpos[0] <= (this.coordX + 1)) && (newpos[1] <= this.coordY && newpos[1] < (this.coordY + 2)))) {
                 this.coordX = newpos[0];
                 this.coordY = newpos[1];
                 this.selectionne = false;
-                System.out.println("Pion NOIR, MONTE");
                 reussi = true;
             }
         }
@@ -66,7 +63,7 @@ public class Pion {
         } else {
             System.out.println("Position invalide");
             for (int i : newpos)
-                System.out.println(i);
+                System.out.println(" Ceci est I :"+i);
             return reussi;
         }
     }
@@ -74,14 +71,19 @@ public class Pion {
 
     public boolean mange(Pion cible, Plateau plateau) {
         this.selectionne = false;
-        if (this.bouge(cible.getPos())) {
+        //if (this.bouge(cible.getPos())) {
+        if(plateau.estVide(this.getPosManger(cible)) == true) { // A enlever si vous voulez retrouver le manger de base
+                // this.getPosManger(cible);
+                this.coordX=this.getPosManger(cible)[0];
+                this.coordY=this.getPosManger(cible)[1];// Aussi
+                System.out.println("test réussi"); // aussi
             cible.setTypePion("mort");
             return true;
         } else
             return false;
     }
 
-    public void verifmange(Pion cible, Plateau plateau) {
+    /* public void verifmange(Pion cible, Plateau plateau) {
         int pos1[] = {(this.coordX + 2), (this.coordY - 2)};
         if ((this.coordX == cible.coordX - 1) && (this.coordY == cible.coordY + 1) && (plateau.estVide(pos1))) {
             this.coordX += 2;
@@ -108,7 +110,7 @@ public class Pion {
             this.coordY += 2;
             System.out.println("Text");
         }
-    }
+    } */
 
     public String toString() {
         if (System.getProperty("os.name") == "Linux") {
@@ -148,6 +150,32 @@ public class Pion {
                 }
             }
         }
+    }
+
+    public int[] getPosManger(Pion cible){
+        int[] mangerpos = new int[2];
+        int k=0;
+        int j=0;
+        if(this.coordX <= cible.coordX )
+            k = 1; // cas 1 => Cible est à droite de pion
+        else
+            k = -1; // cas 2 => Cible est à gauche de pion
+        if(this.coordY <= cible.coordY)
+            j = -1; // cas 1 => Cible est en dessus de pion
+        else
+            j = 1; // cas 2 => Cible est au dessous de pion
+
+        if(k==1)
+            mangerpos[0]=(cible.coordX+1);
+        else
+            mangerpos[0]=(cible.coordX-1);
+        if(j==1)
+            mangerpos[1]=(cible.coordY-1);
+        else
+            mangerpos[1]=(cible.coordY+1);
+
+        System.out.println("test position : "+mangerpos[0]+" "+mangerpos[1]);
+        return mangerpos;
     }
 
     public int[] getPos() {
