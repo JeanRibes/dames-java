@@ -61,7 +61,7 @@ class Plateau {
                 cetteCase.pion = null;
         }
         for (int i = 0; i < pions.length; i++) {
-            if (!pions[i].typePion.equals("mort")) // on ne rajoute pas les pions morts à l'affichage
+            if (pions[i].isVivant()) // on ne rajoute pas les pions morts à l'affichage
                 this.cases[pions[i].getY()][pions[i].getX()].setPion(pions[i]);
         }
     }

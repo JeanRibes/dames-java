@@ -61,26 +61,45 @@ public class Pion {
             System.out.println("Vous avez une dame!!!");
             return true;
         } else {
-            System.out.println("Position invalide");
-            for (int i : newpos)
-                System.out.println(" Ceci est I :"+i);
+            //System.out.println("Position invalide");
+            //for (int i : newpos)
+            //    System.out.println(" Ceci est I :"+i);
             return reussi;
         }
     }
 
-
+    /**
+     * la distance maximale de coup est de 1 si pion, 20 si dame
+     * @param cible le pion à manger
+     * @param plateau pour le fonctionnement interne
+     * @return false si le coup était valide
+     */
     public boolean mange(Pion cible, Plateau plateau) {
         this.selectionne = false;
+        int [] posCible = this.getPosManger(cible);
+        //System.out.println("Distance à la cible: "+distanceAvec(cible)+" test:"+distanceValide(distanceAvec(cible)));
+        int[] oldPos = getPos();
         //if (this.bouge(cible.getPos())) {
-        if(plateau.estVide(this.getPosManger(cible)) == true) { // A enlever si vous voulez retrouver le manger de base
-                // this.getPosManger(cible);
-                this.coordX=this.getPosManger(cible)[0];
-                this.coordY=this.getPosManger(cible)[1];// Aussi
-                System.out.println("test réussi"); // aussi
-            cible.setTypePion("mort");
-            return true;
-        } else
-            return false;
+        if(!cible.isInvicible() && plateau.estVide(posCible) && this.blanc != cible.blanc
+                && distanceValide(distanceAvec(cible))) { // A enlever si vous voulez retrouver le manger de base
+                // ça vérifie que les pions sont de couleur différentes
+                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //this.coordX=this.getPosManger(cible)[0];
+                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //this.coordY=this.getPosManger(cible)[1];// Aussi
+                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //System.out.println("test réussi"); // aussi
+                //cible.setTypePion("mort");
+            boolean reussi = true;
+            if(isPion())
+                setPos(posCible); //on place temporairement le pion à l'emplacement de la cible
+            if(this.bouge(posCible)) {
+                cible.tuer();
+                return true;
+            }
+            else {
+                if(isPion())
+                    setPos(oldPos);
+                System.out.println("Erreur: impossible de manger vers cette case");
+                return false;}
+        } else return false;
     }
 
     /* public void verifmange(Pion cible, Plateau plateau) {
@@ -113,7 +132,7 @@ public class Pion {
     } */
 
     public String toString() {
-        if (System.getProperty("os.name") == "Linux") {
+        if (System.getProperty("os.name").equals("Linux")) {
             if (this.selectionne) {
                 return "@";
             } else {
@@ -174,7 +193,7 @@ public class Pion {
         else
             mangerpos[1]=(cible.coordY+1);
 
-        System.out.println("test position : "+mangerpos[0]+" "+mangerpos[1]);
+        //System.out.println("test position : "+mangerpos[0]+" "+mangerpos[1]);
         return mangerpos;
     }
 
@@ -191,5 +210,45 @@ public class Pion {
 
     public void deselectionner() {
         this.selectionne = false;
+    }
+    public boolean isVivant() {
+        return !typePion.equals("mort");
+    }
+    public boolean isDame() {
+        return typePion.equals("dame");
+    }
+    public boolean isPion() {
+        return typePion.equals("pion");
+    }
+    public void tuer() {
+        if(!isVivant())
+            System.out.println("Un pion mort a été tué !!!");
+        this.typePion = "mort";
+    }
+    public void setPos(int[] pos){
+        if(pos.length==2){
+            coordX = pos[0];
+            coordY = pos[1];
+        }
+        else
+            System.out.println("Erreur: il faut une composante X et Y");
+    }
+    public int distanceAvec(Pion cible) {
+        return (int)Math.sqrt(
+                Math.pow(Math.abs(this.coordX-cible.coordX), 2)
+                +Math.pow(Math.abs(this.coordY-cible.coordY),2)
+                ); //racine de deltaX² + deltaY²
+    }
+
+    public boolean distanceValide(int distance) {
+        return this.isDame() || distance==1; //faire un tableau de vérité; j'ai inversé la colonne distance
+    }
+
+    /**
+     *
+     * @return vrai si le pion est sur le pourtout du cercle
+     */
+    public boolean isInvicible() {
+        return (coordX==0||coordX==9||coordY==0||coordY==9);
     }
 }
