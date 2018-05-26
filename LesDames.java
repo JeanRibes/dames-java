@@ -142,6 +142,12 @@ public class LesDames {
                 reussi = pion.mange(cible, plateau);
                 if(!reussi)
                     System.out.println("Action interdite, re-séléctionnez un pion");
+                else { //le joueur a mangé, il a donc droit à un 2e tour
+                    reussi = false; //pour relancer la boucle
+                    pion.selectionne = false;
+                    plateau.update(pions); //pour éviter les petits "x" dans le plateau
+                    continue;
+                }
             }
             pion.selectionne = false;
         }
