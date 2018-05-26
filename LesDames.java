@@ -15,9 +15,14 @@ public class LesDames {
         //System.out.println("Position: x="+pos[0]+" y="+pos[1]);
 
         //bougerPion(pions, plateau, input);
-
+        boolean joueBlanc=true;//les blancs commencent
         while (pionsVivants(pions) > 1) {
-            action2(pions, plateau, input);
+            if(joueBlanc)
+                System.out.println("Vous jouer les pions BLANCS");
+            else
+                System.out.println("Vous jouer les pions NOIRS");
+            action2(pions, plateau, input, joueBlanc);
+            joueBlanc = !joueBlanc; //on change le tour
         }
 
 
@@ -114,10 +119,15 @@ public class LesDames {
         return n;
     }
 
-    public static void action2(Pion[] pions, Plateau plateau, Input input) {
+    public static void action2(Pion[] pions, Plateau plateau, Input input, boolean joueBlanc) {
         boolean reussi = false;
         while (!reussi) {
             Pion pion = input.getPion(plateau);
+            if(pion.blanc!=joueBlanc) { //le joueur ne doit pas utiliser les pions de l'adversaire
+                reussi = false;     // il n'y a pas besoin de plus de restriction sur ça, la méthode mange est bien faite
+                System.out.println("PRENEZ VOS PIONS");
+                continue; //on relance la boucle
+            }
             pion.selectionner();
             System.out.println("Maintenant choisissez une destination pour ce pion");
             int pos[] = input.getPos(plateau);
