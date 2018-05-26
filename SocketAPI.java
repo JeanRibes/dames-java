@@ -60,8 +60,8 @@ public class SocketAPI {
             @Override
             public void onClose(int code, String reason, boolean remote) {
                 System.out.println("closed connection");
-                System.out.println("Reason: " + reason + " code");
-                System.out.print(code);
+                System.out.print("Reason: " + reason + " code");
+                System.out.println(code);
             }
 
             @Override
@@ -100,8 +100,8 @@ public class SocketAPI {
                 } catch (InterruptedException e) {}
             }
         });
-        Chat chat = new Chat(this.sync);
-        chat.start();
+        //Chat chat = new Chat(this.sync);
+        //chat.start();
         spinner.start();
         while (this.data.equals("")) {
             //Thread.yield();
@@ -109,14 +109,15 @@ public class SocketAPI {
                 Thread.sleep(50);
             } catch (InterruptedException e) {}
         }
-        chat.stop();
+        //chat.arreter();
+        //chat.stop();
         spinner.interrupt();
-        //System.out.println("now stop");
+        System.out.println("now stop");
         //spinner.stop();
 
         Pion[] pions = gson.fromJson(this.data, Pion[].class);
         this.data = "";
-        System.out.println("");
+        //System.out.println(pions);
         return pions;
     }
 
@@ -266,11 +267,5 @@ class Chat extends Thread {
     public synchronized void start() {
         this.sc = new Scanner(System.in);
         super.start();
-    }
-
-    @Override
-    public void interrupt() {
-        this.sc = null;
-        super.interrupt();
     }
 }

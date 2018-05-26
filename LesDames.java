@@ -16,12 +16,14 @@ public class LesDames {
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
-            pions = RemplirPlateau(plateau, 20);
+            pions = RemplirPlateau(plateau, 2);
             joueBlanc = true;
             api.post(pions);
+            System.out.println("Vous jouez les pions blancs");
             //api.aToiLeTour();
         } else {
             //pions = api.get(); // reçoit les pions depuis le serveur
+            System.out.println("Vous jouez les pions noirs");
             joueBlanc = false;
         }
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
@@ -37,18 +39,21 @@ public class LesDames {
             System.out.println("À vous!");
             plateau.update(pions);
 
-            action(pions, plateau, input);
+            action2(pions, plateau, input);
             plateau.afficher(pions);
 
             ws.post(pions);
 
             System.out.println("Attendez l'autre joueur");
             pions = ws.waitGet(); //attend jusqu'à la fin du tour de l'autre (donc jusqu'à réception des données)
+            plateau.afficher(pions);
         }
         ws.post(pions); //sinon waitGet fait attendre la boucle et ne reçoit jamais les data de l'autre joueur
         ws.sync.close();
         if(joueBlanc)
             api.supprPartie();
+        else
+            plateau.afficher(pions);
         System.out.println("bravo !");
 
 
@@ -137,7 +142,7 @@ public class LesDames {
     }
 
     /**
-     *  méthode pour une action générique :
+     *  m&eacute;thode pour une action g&eacute;n&eacute;rique :
      *  bouger ou manger un pion
      * @param pions
      * @param plateau
@@ -151,8 +156,7 @@ public class LesDames {
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
 
         pos = input.getPos(plateau);
-        vide:
-        //pour break correctement la boucle secondement supérieure
+        vide: //pour break correctement la boucle secondement supérieure
         if (plateau.estVide(pos)) {
             boolean reussi = pion.bouge(pos);
             while (!reussi) {
@@ -183,13 +187,27 @@ public class LesDames {
         plateau.afficher(pions);
     }
 
+    /**
+     * M&eacute;thode qui renvoie le nombre de pions restant, et elle prend en compte les couleurs :
+     * s'il ne reste plus que des pions de la m&ecirc;me couleur, elle renvoie 0
+     * @param pions
+     * @return
+     */
     public static int pionsVivants(Pion[] pions) {
-        int n = 0;
+        int i = 0,b=0,n=0;
         for (Pion pion : pions) {
-            if (!pion.getTypePion().equals("mort"))
-                n += 1;
+            if (!pion.getTypePion().equals("mort")) {
+                i+=1;
+                if(pion.blanc)
+                    b+=1;
+                else
+                    n+=1;
+            }
         }
-        return n;
+        if(n==0 || b==0)
+            return 0;
+        else
+            return i;
     }
 
     public static void action2(Pion[] pions, Plateau plateau, Input input) {
@@ -213,7 +231,7 @@ public class LesDames {
             }
             pion.selectionne = false;
         }
-        plateau.afficher(pions);
+        //plateau.afficher(pions);
 
     }
 }

@@ -80,7 +80,7 @@ public class Input {
                     case 91:
                         break;
                     case 10:
-                        //return "ENTER";
+                        return "ENTER"; //je l'avais enlevé
                     case 3: //CTRL+C sur Windows qui est échappé
                         System.exit(0);
                         break;
