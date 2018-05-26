@@ -22,6 +22,10 @@ Windows: `java -classpath .\jna-3.0.9.jar;.\jna-platform-4.5.1.jar;.\ LesDames
 * Dans un premier temps, il faut créer un jeu fonctionnel dont les règles reposent sur l'utilisateur (pas de vérifications)
 * On veut un plateau de jeu, des pions, des dames, des cases de différentes couleurs (voir PDF moodle)
 
+# Règles
+* le périmètre est une zone d'invincibilité (on peut pas manger et atterir en dehors du plateau)
+* les pions peuvent manger les dames
+* les dames peuvent se déplacer et manger comme elles le veulent, même en arrière (il faut avoir une case libre par contre) 
 # Comment ça marche
 Partie input/affichage :
 pour prendre une position depuis le plateau, appeler input.getPos(), ça affichera le plateau et permettra à l'utilisateur de déplacer le curseur

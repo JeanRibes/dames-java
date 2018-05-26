@@ -100,6 +100,7 @@ public class LesDames {
         return returned;
     }
 
+
     public static Pion[] sync(Rest api, Plateau plateau) {
         Pion[] pions = api.get();
         plateau.afficher(pions);
@@ -151,32 +152,68 @@ public class LesDames {
 
         pos = input.getPos(plateau);
         vide:
-        if (plateau.estVide(pos))
-            pion.bouge(pos);
-        else {
+        //pour break correctement la boucle secondement supérieure
+        if (plateau.estVide(pos)) {
+            boolean reussi = pion.bouge(pos);
+            while (!reussi) {
+                System.out.println("Ne trichez pas");
+                pos = input.getPos(plateau);
+                //pos = input.selectCase(plateau);
+                pion.bouge(pos);
+            }
+        } else {
             Pion cible = plateau.getPionDepuisCase(pos);
             while (cible.blanc == pion.blanc) { //tant qu'il choisit des pions alliés
                 pos = input.getPos(plateau);
-                if(plateau.estVide(pos)) { //le joueur peut choisir une case vide après avoir essayé de manger ses alliés
-                    pion.bouge(pos);
+                if (plateau.estVide(pos)) { //le joueur peut choisir une case vide après avoir essayé de manger ses alliés
+                    boolean reussi = pion.bouge(pos);
+                    while (!reussi) {
+                        System.out.println("Faut pas tricher !");
+                        reussi = pion.bouge(pos);
+                    }
                     break vide; //si la case est vide, on sort du "if" et on termine
                 }
                 cible = plateau.getPionDepuisCase(pos);
                 //cible = input.getPion(plateau);
             }
-            pion.mange(cible); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
-            //plateau.afficher(pions);
+            pion.mange(cible, plateau); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
+            plateau.afficher(pions);
         }
-        //System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
-        //plateau.afficher(pions);
+        System.out.println("Pion bougé en x=" + pion.getX() + " y=" + pion.getY());
+        plateau.afficher(pions);
     }
 
     public static int pionsVivants(Pion[] pions) {
-        int n=0;
-        for(Pion pion: pions) {
-            if(!pion.getTypePion().equals("mort"))
-                n+=1;
+        int n = 0;
+        for (Pion pion : pions) {
+            if (!pion.getTypePion().equals("mort"))
+                n += 1;
         }
         return n;
+    }
+
+    public static void action2(Pion[] pions, Plateau plateau, Input input) {
+        boolean reussi = false;
+        while (!reussi) {
+            Pion pion = input.getPion(plateau);
+            pion.selectionner();
+            System.out.println("Maintenant choisissez une destination pour ce pion");
+            int pos[] = input.getPos(plateau);
+            if (plateau.estVide(pos)) {
+                reussi = pion.bouge(pos);
+                plateau.update(pions);
+                if(!reussi)
+                    System.out.println("Action interdite, re-séléctionnez un pion");
+            }
+            else { //case avec un pion
+                Pion cible = plateau.getPionDepuisCase(pos);
+                reussi = pion.mange(cible, plateau);
+                if(!reussi)
+                    System.out.println("Action interdite, re-séléctionnez un pion");
+            }
+            pion.selectionne = false;
+        }
+        plateau.afficher(pions);
+
     }
 }
