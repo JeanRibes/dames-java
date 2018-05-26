@@ -31,6 +31,15 @@ public class LesDames {
         //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
         //plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
 
+        //bougerPion(pions, plateau, input);
+        //boolean joueBlanc=true;//les blancs commencent
+        while (pionsVivants(pions) > 1) {
+            if(joueBlanc)
+                System.out.println("Vous jouer les pions BLANCS");
+            else
+                System.out.println("Vous jouer les pions NOIRS");
+            action2(pions, plateau, input, joueBlanc);
+            joueBlanc = !joueBlanc; //on change le tour
         //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
         SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
         pions = ws.waitGet();
@@ -210,10 +219,15 @@ public class LesDames {
             return i;
     }
 
-    public static void action2(Pion[] pions, Plateau plateau, Input input) {
+    public static void action2(Pion[] pions, Plateau plateau, Input input, boolean joueBlanc) {
         boolean reussi = false;
         while (!reussi) {
             Pion pion = input.getPion(plateau);
+            if(pion.blanc!=joueBlanc) { //le joueur ne doit pas utiliser les pions de l'adversaire
+                reussi = false;     // il n'y a pas besoin de plus de restriction sur ça, la méthode mange est bien faite
+                System.out.println("PRENEZ VOS PIONS");
+                continue; //on relance la boucle
+            }
             pion.selectionner();
             System.out.println("Maintenant choisissez une destination pour ce pion");
             int pos[] = input.getPos(plateau);
@@ -228,6 +242,12 @@ public class LesDames {
                 reussi = pion.mange(cible, plateau);
                 if(!reussi)
                     System.out.println("Action interdite, re-séléctionnez un pion");
+                else { //le joueur a mangé, il a donc droit à un 2e tour
+                    reussi = false; //pour relancer la boucle
+                    pion.selectionne = false;
+                    plateau.update(pions); //pour éviter les petits "x" dans le plateau
+                    continue;
+                }
             }
             pion.selectionne = false;
         }
