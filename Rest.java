@@ -94,6 +94,7 @@ public class Rest {
             return null;
         } catch (IOException e) {
             System.out.println("Connection échouée");
+            e.printStackTrace();
             return null;
         }
     }
@@ -236,6 +237,7 @@ public class Rest {
             System.out.println("URL incorrecte");
         } catch (IOException e) {
             System.out.println("Connection échouée");
+            e.printStackTrace();
         }
     }
 

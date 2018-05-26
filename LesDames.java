@@ -16,7 +16,7 @@ public class LesDames {
         boolean joueBlanc;
         if (utiliserLobby(api)) //à mettre AVANT Input (ou faire input.close(); puis recréer input)
         {
-            pions = RemplirPlateau(plateau, 2);
+            pions = RemplirPlateau(plateau, 20);
             joueBlanc = true;
             api.post(pions);
             System.out.println("Vous jouez les pions blancs");
@@ -33,43 +33,35 @@ public class LesDames {
 
         //bougerPion(pions, plateau, input);
         //boolean joueBlanc=true;//les blancs commencent
-        while (pionsVivants(pions) > 1) {
-            if(joueBlanc)
-                System.out.println("Vous jouer les pions BLANCS");
-            else
-                System.out.println("Vous jouer les pions NOIRS");
-            action2(pions, plateau, input, joueBlanc);
-            joueBlanc = !joueBlanc; //on change le tour
         //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
         SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
         pions = ws.waitGet();
         System.out.println("Attendez un autre joueur");
-        while(pionsVivants(pions)>1){
-            System.out.println("À vous!");
+        while (pionsVivants(pions) > 1) {
+            if (joueBlanc)
+                System.out.println("Vous jouer les pions BLANCS");
+            else
+                System.out.println("Vous jouer les pions NOIRS");
             plateau.update(pions);
-
-            action2(pions, plateau, input);
+            action2(pions, plateau, input, joueBlanc);
             plateau.afficher(pions);
-
             ws.post(pions);
-
             System.out.println("Attendez l'autre joueur");
             pions = ws.waitGet(); //attend jusqu'à la fin du tour de l'autre (donc jusqu'à réception des données)
-            plateau.afficher(pions);
+            }
+
+            ws.post(pions); //sinon waitGet fait attendre la boucle et ne reçoit jamais les data de l'autre joueur
+            ws.sync.close();
+            if (joueBlanc)
+                api.supprPartie();
+            else
+                plateau.afficher(pions);
+            System.out.println("bravo !");
+
+
+            input.close(); //à mettre TOUT à la fin
+            System.exit(0);
         }
-        ws.post(pions); //sinon waitGet fait attendre la boucle et ne reçoit jamais les data de l'autre joueur
-        ws.sync.close();
-        if(joueBlanc)
-            api.supprPartie();
-        else
-            plateau.afficher(pions);
-        System.out.println("bravo !");
-
-
-        input.close(); //à mettre TOUT à la fin
-        System.exit(0);
-    }
-
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
         System.out.println("Plateau crée !");
         Pion tableauPions[] = new Pion[(2 * nbPion)];
@@ -251,7 +243,5 @@ public class LesDames {
             }
             pion.selectionne = false;
         }
-        //plateau.afficher(pions);
-
     }
 }
