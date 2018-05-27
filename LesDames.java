@@ -38,11 +38,10 @@ public class LesDames {
         pions = ws.waitGet();
         System.out.println("Attendez un autre joueur");
         while (pionsVivants(pions) > 1) {
-            if (joueBlanc)
-                System.out.println("Vous jouer les pions BLANCS");
+            if(joueBlanc)
+                System.out.println("Vous jouez les pions BLANCS");
             else
-                System.out.println("Vous jouer les pions NOIRS");
-            plateau.update(pions);
+                System.out.println("Vous jouez les pions NOIRS");
             action2(pions, plateau, input, joueBlanc);
             plateau.afficher(pions);
             ws.post(pions);
@@ -63,7 +62,6 @@ public class LesDames {
             System.exit(0);
         }
     public static Pion[] RemplirPlateau(Plateau plateau, int nbPion) {
-        System.out.println("Plateau crée !");
         Pion tableauPions[] = new Pion[(2 * nbPion)];
         //Pion tableauPions[] = new Pion[1+(2 * nbPion)];
         int i = 0;
@@ -155,7 +153,6 @@ public class LesDames {
         int[] pos = input.selectPion(plateau);
         Pion pion = plateau.getPionDepuisCase(pos);
         System.out.println("Pion en x=" + pion.getX() + " y=" + pion.getY() + " séléctionné. Mangez ou bougez");
-
         pos = input.getPos(plateau);
         vide: //pour break correctement la boucle secondement supérieure
         if (plateau.estVide(pos)) {
@@ -235,13 +232,19 @@ public class LesDames {
                 if(!reussi)
                     System.out.println("Action interdite, re-séléctionnez un pion");
                 else { //le joueur a mangé, il a donc droit à un 2e tour
-                    reussi = false; //pour relancer la boucle
-                    pion.selectionne = false;
-                    plateau.update(pions); //pour éviter les petits "x" dans le plateau
-                    continue;
+                    plateau.update(pions);
+                    if(plateau.peutIlManger(pion)) {
+                        reussi = false; //pour relancer la boucle
+                        pion.selectionne = false;
+                        plateau.update(pions); //pour éviter les petits "x" dans le plateau
+                        continue;
+                    }
                 }
             }
             pion.selectionne = false;
         }
+        plateau.update(pions);
+        //plateau.afficher(pions);
+
     }
 }

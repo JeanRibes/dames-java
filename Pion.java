@@ -76,30 +76,28 @@ public class Pion {
      */
     public boolean mange(Pion cible, Plateau plateau) {
         this.selectionne = false;
-        int [] posCible = this.getPosManger(cible);
+        int [] posApresManger = this.getPosManger(cible);
         //System.out.println("Distance à la cible: "+distanceAvec(cible)+" test:"+distanceValide(distanceAvec(cible)));
         int[] oldPos = getPos();
         //if (this.bouge(cible.getPos())) {
-        if(!cible.isInvicible() && plateau.estVide(posCible) && this.blanc != cible.blanc
-                && distanceValide(distanceAvec(cible))) { // A enlever si vous voulez retrouver le manger de base
-                // ça vérifie que les pions sont de couleur différentes
-                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //this.coordX=this.getPosManger(cible)[0];
-                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //this.coordY=this.getPosManger(cible)[1];// Aussi
-                //ce code marche mais avec ça on ne peut pas devenir une dame après manger //System.out.println("test réussi"); // aussi
-                //cible.setTypePion("mort");
-            boolean reussi = true;
-            if(isPion())
-                setPos(posCible); //on place temporairement le pion à l'emplacement de la cible
-            if(this.bouge(posCible)) {
-                cible.tuer();
+        if(!cible.isInvicible() && plateau.estVide(posApresManger) && this.blanc != cible.blanc
+                && distanceValide(distanceAvec(cible))) {
+            //System.out.println(posApresManger[0]+" "+posApresManger[1]);
+            //System.out.println(cible.getY()+" "+cible.getX());
+            setPos(cible.getPos());
+
+            if(this.bouge(posApresManger)) { //si il y a une case où le pion peut atterrir
+                cible.tuer(); //note : deux pions peuvent être sur une MÊME case ! (mais un seul sera affiché)
                 return true;
             }
             else {
-                if(isPion())
-                    setPos(oldPos);
+                setPos(oldPos);//on annule les changements
                 System.out.println("Erreur: impossible de manger vers cette case");
                 return false;}
-        } else return false;
+        } else {
+            //System.out.print("mangeage échoué");
+            return false;
+        }
     }
 
     /* public void verifmange(Pion cible, Plateau plateau) {
@@ -193,7 +191,8 @@ public class Pion {
         else
             mangerpos[1]=(cible.coordY+1);
 
-        //System.out.println("test position : "+mangerpos[0]+" "+mangerpos[1]);
+        //System.out.println("position pion :"+this.coordX+" "+this.coordY);
+        //System.out.println("position cible: "+mangerpos[0]+" "+mangerpos[1]);
         return mangerpos;
     }
 
@@ -250,5 +249,11 @@ public class Pion {
      */
     public boolean isInvicible() {
         return (coordX==0||coordX==9||coordY==0||coordY==9);
+    }
+
+    public boolean equals(Pion pion) {
+        if(pion.blanc==this.blanc)
+            return true;
+        else return false;
     }
 }
