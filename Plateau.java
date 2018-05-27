@@ -1,4 +1,4 @@
-class Plateau {
+public class Plateau {
     private Case[][] cases;
     public int taille;
 
