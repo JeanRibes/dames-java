@@ -1,3 +1,4 @@
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import sun.misc.Unsafe;
 
 import java.io.IOException;
@@ -16,9 +17,11 @@ public class Input {
         this.curX = 0;
         this.curY = 0;
         System.out.println("Pour séléctionner un pion, deux méthodes sont disponibles :");
-        System.out.println("* flèches du clavier puis entrée");
+        System.out.println("* flèches du clavier puis espace");
         System.out.println("* si votre terminal n'est pac compatible, utilisez ZQSD pour vous déplacer et Espace pour valider,");
         System.out.println("    et entre chaque touche il faudra appuyer sur enter");
+        System.out.println("Pour manger un pion, il faut choisir un pion adverse et non pas la case où on veut atterrir.");
+        System.out.println("Si applicable, le jeu vous demandera de continuer à manger.");
 
         compteurKonami = 0;
     }

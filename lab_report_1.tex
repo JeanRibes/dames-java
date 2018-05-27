@@ -27,7 +27,8 @@
 \usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{amsmath} % Required for some math elements 
 \usepackage[utf8]{inputenc}   
-\usepackage[frenchb]{babel} 
+\usepackage[french]{babel} 
+\usepackage{hyperref}
 
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
 
@@ -61,6 +62,10 @@
 % If you wish to include an abstract, uncomment the lines below
 \begin{abstract}
 Notre projet consiste à produire un jeu de dames sous Java en utilisant les notions acquises depuis le début de l'année. A savoir, l'usage de tableaux 2D, d'objets, d'affichage.
+\\
+Code source Java \url{https://github.com/JeanRibes/dames-java}
+\\JavaDoc \url{https://www.ribes.me/javadoc/}
+\\Code source du serveur \url{https://github.com/JeanRibes/central/tree/master/dames}
 \end{abstract}
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -92,6 +97,48 @@ Nos objectifs sont les suivants :
   \item Communiquer rapidement, sans "lag" les informations du jeu à travers Internet.
   \item Utiliser un serveur central qui organise les parties et route les informations du jeu.
 \end{itemize}
+
+\section{Implémentation actuelle}
+\subsection{Code}
+Le jeu utilise un tableau d'objets Pion, un objet Plateau pour l'affichage lié à un objet Input pour le clavier.
+Ces objets s'utilisent entre eux et fournissent des méthodes pratiques.
+\subsection{Réseau}
+Il faut que les deux joueurs puissent se connecter au serveur web de synchronisation de jeu (actuellement https://api.ribes.me).
+Une fois que les joueurs ont lancé le jeu, l'un d'eux doit créer une partie, et ensuite l'autre doit le rejoindre.
+
+Pour lancer la partie, les clients Java communiquent avec le serveur Django via requêtes HTTP json ("REST"). Une fois la partie lancée, la synchronisation du jeu est faite par des WebSockets (python asynchrone+Redis).
+\\
+
+Du fait de l'utilisation d'un serveur, on peut jouer avec un adversaire situé n'import où, même derrière un proxy ou un pare-feu (contrairement aux Socket de Java). Il n'a a pas beaucoup de "lag" réseau avec les Websockets, car sinon avec seulement des requêtes HTTP il y avait plus de latence.
+\\
+
+Le serveur de synchronisation tourne sous Python avec le framework Django et les extension DjangoRestFramework (API REsT) et Channels (WebSockets). Il utilise une base de donnée MySQL pour le stockage des parties et Redis comme cache pour la synchronisation.
+Dès qu'il reçoit les données de la partie en cours (sérialisée en JSON), il les renvoie à l'adversaire. 
+
+\subsection{Interface}
+Le plateau de jeu est redessiné dans le terminal à chaque action, les pions sont affichés comme des petits ronds blancs ou noirs sous Linux, et sous Windows, faute de caractère adaptés ce sont des \textit{n,b} pour les pions et \textit{N, B} pour les dames.
+
+L'affichage est séparé des données : les pions sont mis à jour via une méthode spécifique.
+
+Les pions sont affichés via leur méthode toString()
+\subsection{Contrôles}
+Un code trouvé sur Internet permet d'utiliser les touches du clavier sans appuyer sur Enter à chaque fois.
+
+Pour séléctionner les pions, le joueur déplace un curseur à l'écran, qui garde son positionnement entre les actions.
+Par exemple, pour se déplacer, le joueur choisit un pion, puis une case vide.
+
+Pour manger un pion, il séléctionne un des siens puis un de l'adversaire.
+\subsection{Jeu}
+À chaque prise de pion, le jeu calcule une autre victime pour le pion qui vient de manger (et seulement celui-ci), et demande au joueur de continuer s'il le faut.
+
+Note: les précédentes versions permettaient de continuer à jouer n'import quel coup tant qu'on venait de manger, ce qui place l'adversaire dans une mauvaise posture.
+
+Le jeu interdit de jouer avec les pions de l'adversaire que ce soit en local ou en réseau (2 versions différentes sur Git)
+\subsection{Distribution}
+Le programme nécéssitant des librairies (JNA pour le clavier, Gson et Java-Websockets pour le réseau), il y a des JAR qui contiennent tout et prêts à être lancés sur GitHub (https://github.com/JeanRibes/dames-java/releases).
+\\
+
+Le jeu local et en réseau sont deux versions différentes. Il est possible des les concaténer, mais cela complexifie la méthode main() et oblige à inclure des librairies potentiellement inutiles.
 %\begin{center}\ce{==== POUR APRÈS ===}\end{center}
 
 % If you have more than one objective, uncomment the below:
