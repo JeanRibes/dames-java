@@ -32,6 +32,7 @@ class Plateau {
                 }
                 else{
                     if(cetteCase.isBlanc())
+                        //System.out.print("│"+x+cetteCase+y+"");
                         System.out.print("│░"+cetteCase+"░");
                     else
                         System.out.print("│   ");
@@ -71,17 +72,49 @@ class Plateau {
         try {
             return this.cases[pos[1]][pos[0]].pion;
         } catch (Exception e) {
-            System.out.println("Veuillez séléctionner un pion correct");
-            e.printStackTrace();
+            //System.out.println("Veuillez séléctionner un pion correct");
+            //e.printStackTrace();
             return null;
         }
     }
 
+    public boolean peutIlManger(Pion pion) {
+        boolean returned = false;
+        for(int x=pion.getX()-2;x<pion.getX()+2;x+=1){
+            for(int y=pion.getY()-2;y<pion.getY()+2;y+=1){
+                int[] curPos = {x, y};
+                //System.out.println("test en x="+x+" y="+y+ " ");
+                if(this.hasPion(curPos)) { //System.out.print("pas vide ");
+                    Pion cibleTest = this.getPionDepuisCase(curPos);
+                    if(!pion.equals(cibleTest)) { //si pion adverse
+                        //System.out.print("cible: "+cibleTest);
+                        String oldTypeCible = cibleTest.getTypePion();
+                        int[] oldPosPion = pion.getPos();
+                        if(pion.mange(cibleTest, this)){ //si on peut le manger
+                            //System.out.print("noice");
+                            returned = true;
+                            cibleTest.setTypePion(oldTypeCible);//on resscucite la cible
+                            pion.setPos(oldPosPion);        //on replace le pion
+
+                        }
+                    }
+                }
+                //else System.out.print("nope");
+            }
+
+        }
+        return returned;
+    }
+
     public boolean hasPion(int[] pos) {
-        return this.cases[pos[1]][pos[0]].hasPion();
+        try {
+            return this.cases[pos[1]][pos[0]].hasPion();
+        } catch (Exception e){
+            return false;
+        }
     }
 
     public boolean estVide(int[] pos) {
-        return !this.cases[pos[1]][pos[0]].hasPion();
+        return !hasPion(pos);
     }
 }
