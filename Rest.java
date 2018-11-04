@@ -101,7 +101,7 @@ public class Rest {
 
     /**
      * Envoie les pions au serveur d'API
-     * À utiliser après avoir fait bougé un pion sur le plateau
+     * À utiliser après avoir fait bougé un pion sur le plateauPanel
      * @param pions un tableau d'objets Pion qui représente l'état du jeu à actualiser sur le serveur
      */
     public void post(Pion[] pions) {

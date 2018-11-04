@@ -37,7 +37,7 @@
 	    </archives>
 	  </restrict>
 	  <manifest>
-                <attribute name="Main-Class" value="LesDames"/>
+                <attribute name="Main-Class" value="Affichage"/>
 	  </manifest>
       </jar>
   </target>
@@ -84,4 +84,10 @@
     <fail message="Ivy has been installed. Run the build again"/>
     <!--fin de la magie-->
 </target>
+    <target name="test">
+        <java classname="Affichage" fork="true">
+            <classpath refid="projet.classpath"/>
+        </java>
+    </target>
+    <target name="dev" depends="clean,setup,install-ivy,resolve,compile,test"></target>
 </project>

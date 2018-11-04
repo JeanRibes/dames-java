@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class LesDames {
     /*
-    Ne pas oublier d'appeler plateau.update après avoir bougé des pions ou avant d'afficher
+    Ne pas oublier d'appeler plateauPanel.update après avoir bougé des pions ou avant d'afficher
      */
     public static void main(String[] args) throws IOException, URISyntaxException {
         Plateau plateau = new Plateau(10); //coordonnées de 0 à 9
@@ -28,10 +28,10 @@ public class LesDames {
         }
         Input input = new Input(); //à mettre après tout ce qui utilise un Scanner
         input.reset(plateau.taille-1);
-        //plateau.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
-        //plateau.afficher(pions); // affiche le plateau actuel, sans le curseur
+        //plateauPanel.update(pions); //synchronise les pions dans les cases, à tout le temps appeler
+        //plateauPanel.afficher(pions); // affiche le plateauPanel actuel, sans le curseur
 
-        //bougerPion(pions, plateau, input);
+        //bougerPion(pions, plateauPanel, input);
         //boolean joueBlanc=true;//les blancs commencent
         //SocketAPI ws = new SocketAPI("ws://localhost:8000", api.getId(), joueBlanc);
         SocketAPI ws = new SocketAPI("wss://api.ribes.me", api.getId(), joueBlanc);
@@ -159,7 +159,7 @@ public class LesDames {
             while (!reussi) {
                 System.out.println("Ne trichez pas");
                 pos = input.getPos(plateau);
-                //pos = input.selectCase(plateau);
+                //pos = input.selectCase(plateauPanel);
                 pion.bouge(pos);
             }
         } else {
@@ -175,7 +175,7 @@ public class LesDames {
                     break vide; //si la case est vide, on sort du "if" et on termine
                 }
                 cible = plateau.getPionDepuisCase(pos);
-                //cible = input.getPion(plateau);
+                //cible = input.getPion(plateauPanel);
             }
             pion.mange(cible, plateau); //si le mec séléctionne un pion allié puis une case vide, ce code fait crash
             plateau.afficher(pions);
@@ -235,7 +235,7 @@ public class LesDames {
                     if(plateau.peutIlManger(pion)) {
                         reussi = false; //pour relancer la boucle
                         pion.selectionne = false;
-                        plateau.update(pions); //pour éviter les petits "x" dans le plateau
+                        plateau.update(pions); //pour éviter les petits "x" dans le plateauPanel
                         continue;
                     }
                 }
@@ -243,7 +243,7 @@ public class LesDames {
             pion.selectionne = false;
         }
         plateau.update(pions);
-        //plateau.afficher(pions);
+        //plateauPanel.afficher(pions);
 
     }
 }

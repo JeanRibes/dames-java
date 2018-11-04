@@ -1,10 +1,10 @@
 public class Plateau {
-    private Case[][] cases;
+    public Case[][] cases;
     public int taille;
 
     /**
      * Constructeur qui va cr&eacute;er lui-m&ecirc;me ses cases, en alternant une sur deux blanche
-     * @param taille la taille du plateau de jeu (un carr&eacute;)
+     * @param taille la taille du plateauPanel de jeu (un carr&eacute;)
      */
     public Plateau(int taille) {
         this.taille = taille;
@@ -13,12 +13,11 @@ public class Plateau {
         for (int y = 0; y < this.cases.length; y++) {
             doitEtreBlanc = (y%2 == 0);
             for (int x = 0; x < this.cases[y].length; x++) {
+                this.cases[y][x] = new Case(x,y);
                 if (doitEtreBlanc) {
-                    this.cases[y][x] = new Case();
                     this.cases[y][x].setBlanc();
                     doitEtreBlanc = false;
                 } else {
-                    this.cases[y][x] = new Case();
                     doitEtreBlanc = true;
                 }
             }
@@ -77,7 +76,7 @@ public class Plateau {
     public void update(Pion[] pions) {
         for (Case[] ligne: this.cases) {
             for(Case cetteCase: ligne)
-                cetteCase.pion = null;
+                cetteCase.deletePion();
         }
         for (int i = 0; i < pions.length; i++) {
             if (pions[i].isVivant()) // on ne rajoute pas les pions morts à l'affichage
@@ -150,5 +149,44 @@ public class Plateau {
      */
     public boolean estVide(int[] pos) {
         return !hasPion(pos);
+    }
+
+    public void resetSelectionCases(){
+        for (Case[] ligne: this.cases) {
+            for(Case cetteCase: ligne)
+                cetteCase.deselectionnerCase();
+        }
+    }
+
+    public Case getCaseSelectionnee(){
+        Case selectionnee = null;
+        for (int y=0;y<this.cases.length; y++) {
+            for(int x=0; x<this.cases[y].length; x++) {
+                Case cetteCase = this.cases[y][x];
+                if(cetteCase.isSelectionnee() && selectionnee!=null) {
+                    resetSelectionCases();
+                    throw new MultipleCasesSelectionnee();
+                }
+                if(cetteCase.isSelectionnee()) {
+                    selectionnee = cetteCase;
+                    return cetteCase;
+                }
+            }
+        }
+        return null;
+    }
+    public class MultipleCasesSelectionnee
+            extends RuntimeException {
+        public MultipleCasesSelectionnee() {
+            super("Vous avez séléctionné plus d'une case !");
+        }
+    }
+    public void reset() {
+        for (Case[] ligne: this.cases) {
+            for(Case cetteCase: ligne) {
+                cetteCase.deselectionnerCase();
+                cetteCase.pion.deselectionner();
+            }
+        }
     }
 }

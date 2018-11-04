@@ -32,7 +32,7 @@ public class Input {
 
     /**
      * Permet de repositionner le curseur, mis habituellement au milieu de l'&eacute;cran
-     * @param taille la taille du plateau
+     * @param taille la taille du plateauPanel
      */
     public void reset(int taille) { //remet les coordonnées du curseur à 0; par défaut il se souvient de sa précédente séléction
         this.curX = taille/2;
@@ -109,7 +109,7 @@ public class Input {
 
     /**
      *
-     * @param taille la taille du plateau une instance de Plateau
+     * @param taille la taille du plateauPanel une instance de Plateau
      * @see Plateau#taille
      * @param key la touche press&eacute;e par l'utilisateur
      * @return un tableau de deux entiers [X,Y] repr&eacute;sentation la position du curseur
@@ -137,15 +137,15 @@ public class Input {
     }
 
     /**
-     * Permet de s&eacute;l&eacute;ctionner une case sur le plateau en d&eacute;placant le curseur
+     * Permet de s&eacute;l&eacute;ctionner une case sur le plateauPanel en d&eacute;placant le curseur
      * emp&ecirc;che de choisir une case noire (logque pour les Dames)
      * @param plateau une instance de Plateau
      * @see Plateau
      * @return un tableau de deux entiers [X,Y]
      */
     public int[] getPos(Plateau plateau) {
-        /*curX = plateau.taille / 2;
-        curY = plateau.taille / 2;*/
+        /*curX = plateauPanel.taille / 2;
+        curY = plateauPanel.taille / 2;*/
         int[] pos = {this.curX, this.curY}; //
         do {
             plateau.afficherPlateau(pos);
