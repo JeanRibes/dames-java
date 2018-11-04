@@ -53,6 +53,7 @@ public class Case extends JPanel implements MouseListener {
         this.pion = pion;
         setCouleurPion(pion.blanc);
         textPion.setText(""+pion);
+        resetColor();
     }
 
     public boolean hasPion() {
@@ -90,6 +91,11 @@ public class Case extends JPanel implements MouseListener {
             setBackground(Color.lightGray);
         }
         else {setBackground(Color.BLACK);}
+        if(selectionnee)
+            selectionnerCase();
+        if(active)
+            setBackground(Color.GREEN);
+
     }
 
     public int[] getPos(){int[] s = {x,y};return s;}
@@ -105,12 +111,14 @@ public class Case extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if(!blanc){return;} //on ne séléctionne pas les cases noires
         if(pion!=null){
             if(this.pion.selectionne){this.pion.deselectionner();}
             else{this.pion.selectionner();}
         }
         if(selectionnee){this.deselectionnerCase();}
         else{this.selectionnerCase();}
+        resetColor();
         int[] pos = {x,y};
         cListener.onClick(pos);
     }
@@ -138,11 +146,7 @@ public class Case extends JPanel implements MouseListener {
 
     public void setActive(boolean active) {
         this.active = active;
-        if(active){
-            setBackground(Color.GREEN);
-        }else {
-            resetColor();
-        }
+        resetColor();
     }
 
     public void mousePressed(MouseEvent e) {

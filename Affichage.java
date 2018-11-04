@@ -14,11 +14,13 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     JPanel plateauPanel;
     Plateau plateau;
     Case selectionActive;
+    JTextPane messagesErreur;
+    static int counter=3;
 
     public Affichage(int taille) {
-        //setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Partie de dames");
-        setSize(600, 600);
+        setSize(600, 665);
         plateauPanel = new JPanel();
         plateauPanel.setSize(500, 500);
         //plateauPanel.setBackground(Color.BLUE);
@@ -26,7 +28,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
         setLocationRelativeTo(null);
 
         plateau = new Plateau(taille);
-        mesPions  = LesDames.RemplirPlateau(plateau, taille);
+        mesPions  = LesDames.RemplirPlateau(plateau, 20);
         plateau.update(mesPions);
         for(int y=0;y<plateau.cases.length; y++) {
             for (int x = 0; x < plateau.cases.length; x++) {
@@ -72,7 +74,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
                 deselectionnerTout(mesPions, plateau);
             }
         });
-        JButton bouger = new JButton("Bouger");
+        JButton bouger = new JButton("Action");
         bouger.addActionListener(e -> {
             if(selectionActive()) {
                 desactiverSelection();
@@ -80,17 +82,27 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
             else {
                 selectionActive = plateau.getCaseSelectionnee();
                 selectionActive.setActive(true);
-
+                messagesErreur.setText("Choisissez un pion à manger ou une case où aller");
             }
         });
+        JPanel infos = new JPanel();
+        messagesErreur = new JTextPane();
+        messagesErreur.setEditable(false);
+        infos.add(messagesErreur);
         buttons.setLayout(new FlowLayout());
         buttons.add(bouger, BorderLayout.WEST);
         buttons.add(cancel, BorderLayout.CENTER);
+        buttons.setBackground(new Color(28, 140, 107));
+        plateauPanel.setBackground(new Color(255, 166, 18));
+        infos.setBackground(new Color(123, 233, 255));
         add(buttons, BorderLayout.SOUTH);
         add(plateauPanel, BorderLayout.CENTER);
+        add(infos, BorderLayout.NORTH);
 
         addKeyListener(this);
         setVisible(true);
+
+        messagesErreur.setText("Cliquez sur un pion et appuyez sur Action pour continuer");
     }
 
     /*public void setPion(Pion pion){
@@ -108,13 +120,35 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     @Override
     public void onClick(int[] pos) {
         plateau.update(mesPions);
-        //Pion cePion = plateau.getPionDepuisCase(pos);
-        if(selectionActive()){
-            System.out.println(selectionActive.pion);
-            if(selectionActive.pion.bouge(pos))
-                plateau.resetSelectionCases(); desactiverSelection();
-            plateau.update(mesPions);
+        if(selectionActive()) {
+            if(!selectionActive.hasPion()) {
+                desactiverSelection();
+                messagesErreur.setText("Vous ne pouvez pas activer une case sans pion");
+                plateau.resetSelectionCases();
+                plateau.update(mesPions);return;
+            }
+            Pion actif = selectionActive.pion;
+            if (plateau.estVide(pos)) {
+                if (selectionActive.pion.bouge(pos)) {
+                    plateau.resetSelectionCases();
+                    desactiverSelection();
+                    plateau.update(mesPions);
+                }else messagesErreur.setText("Vous ne pouvez pas jouer ici, séléctionnez un autre pion ou case");
+            } else {
+                Pion cePion = plateau.getPionDepuisCase(pos);
+                if (actif.mange(cePion, plateau)) {
+                    plateau.resetSelectionCases();
+                    if(plateau.peutIlManger(actif)){
+                        messagesErreur.setText("REJOUEZ !");
+                        desactiverSelection();
+                    }
+                } else messagesErreur.setText("Vous ne pouvez pas manger ce pion");
+                plateau.resetSelectionCases();
+                plateau.update(mesPions);
+
+            }
         }
+        testFin();
     }
 
     public static void deselectionnerTout(Pion[] pions, Plateau plateau){
@@ -130,6 +164,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     }
 
     public void desactiverSelection() {
+        System.out.println("selection desactivée");
         try{
             selectionActive.setActive(false);
             selectionActive = null;
@@ -137,6 +172,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     }
 
     public static void main(String[] args) throws IOException {
+        new Affichage(10);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) { //merci StackOverflow
@@ -151,12 +187,14 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
                 }
             }
         }catch (Exception e) {}
-        new Thread(()->{
-            new Affichage(10);}).run();
-        try {
-            LesDames.main(args);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+    }
+    public void testFin(){
+        if(LesDames.pionsVivants(mesPions) ==0) {
+            JFrame a = new JFrame();
+            a.setSize(200,150);
+            a.setLocationRelativeTo(null);
+            a.add(new JLabel("bravo, gagné"));
+            a.setVisible(true);
         }
     }
 }
