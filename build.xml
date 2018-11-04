@@ -1,0 +1,87 @@
+<project name="chat" default="all" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+  <!-- Definition des proprietes du projet -->
+  <property name="projet.sources.dir" value="."/>
+  <property name="projet.lib.dir" value="lib"/>
+  <property name="projet.jar.file" value="dames.jar"/>
+  <property name="projet.bin.dir" value="out"/>
+
+  <!-- Definition du classpath du projet -->
+  <path id="projet.classpath">
+    <fileset dir="${projet.lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+    <pathelement location="${projet.bin.dir}"/>
+  </path>
+ 
+  <!-- Compilation des classes du projet -->
+  <target name="compile" description="Compilation">
+    <javac srcdir="${projet.sources.dir}" 
+	          destdir="${projet.bin.dir}" debug="off" 
+		  optimize="on" deprecation="on"
+		  includeantruntime="false"
+		  encoding="utf-8"
+		  classpathref="libs.path">
+      <classpath refid="projet.classpath"/>
+    </javac>
+  </target>
+
+  <!--création du JAR-->
+  <target name="package" description="Création du JAR" depends="">
+      <jar jarfile="${projet.jar.file}" basedir="${projet.bin.dir}" compress="true">
+	  <restrict> <!-- inclut les librairies dans le JAR-->
+	      <archives>
+	        <zips>
+		    <fileset dir="${projet.lib.dir}" includes="**/*.jar"
+			excludes="*sources*,*javadoc*"/>
+	        </zips>
+	    </archives>
+	  </restrict>
+	  <manifest>
+                <attribute name="Main-Class" value="LesDames"/>
+	  </manifest>
+      </jar>
+  </target>
+
+  <!--nettoyage-->
+  <target name="clean" description="Supprime tous les 'generated'">
+      <delete dir="${projet.bin.dir}" verbose="true"></delete>
+      <delete file="${projet.jar.file}"/> 
+  </target>
+
+  <target name="setup">
+      <mkdir dir="${projet.lib.dir}"></mkdir>
+      <mkdir dir="${projet.bin.dir}"></mkdir>
+  </target>
+  <target name="resolve" description="Use ivy to resolve classpaths">
+      <ivy:retrieve pathid="libs.path">
+	  <!-- https://mvnrepository.com/artifact/org.java-websocket/Java-WebSocket -->
+	  <dependency org="org.java-websocket" name="Java-WebSocket" rev="1.3.8"/>
+	  <dependency org="net.java.dev.jna" name="jna-platform" rev="4.5.2"/>
+	  <dependency org="com.google.code.gson" name="gson" rev="2.8.2"/>
+      </ivy:retrieve>
+	  <!--    </ivy:cachepath>-->
+  </target>
+
+  <target name="run">
+      <java classname="LesDames" fork="true">
+	  <classpath refid="projet.classpath"/>
+      </java>
+  </target>
+
+  <available file="${projet.jar.file}" property="projet.jar.built"/>
+  <target name="run-jar" if="projet.jar.built">
+      <java jar="${projet.jar.file}" fork="true"/>
+    </target>
+
+    <target name="all" description="Compilation et exécution"
+	depends="clean,setup,install-ivy,resolve,compile,package"/>
+
+    <!--Install IVY https://stackoverflow.com/questions/26650590/how-to-add-dependency-to-ant-project voir -->
+    <available classname="org.apache.ivy.Main" property="ivy.installed"/>
+<target name="install-ivy" description="Install ivy" unless="ivy.installed">
+    <mkdir dir="${user.home}/.ant/lib"/>
+    <get dest="${user.home}/.ant/lib/ivy.jar" src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar"/>
+    <fail message="Ivy has been installed. Run the build again"/>
+    <!--fin de la magie-->
+</target>
+</project>
