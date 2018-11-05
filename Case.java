@@ -18,7 +18,7 @@ public class Case extends JPanel implements MouseListener {
         super();
         this.blanc = false;
         resetColor();
-        textPion = new JLabel("u");
+        textPion = new JLabel(" ");
         textPion.setFont(textPion.getFont().deriveFont((float) 30.1));
         add(textPion);
         addMouseListener(this);
@@ -27,7 +27,7 @@ public class Case extends JPanel implements MouseListener {
         this();
         x = X;
         y = Y;
-        textPion.setText(x + "," + y);
+        //textPion.setText(x + "," + y);
     }
     public void addCaseListener(Object that){
         cListener = (CaseEvent) that;
@@ -40,7 +40,6 @@ public class Case extends JPanel implements MouseListener {
         else
             textPion.setText("");
         resetColor();
-        setBackground(Color.lightGray);
     }
 
     public boolean isBlanc() {
@@ -88,9 +87,9 @@ public class Case extends JPanel implements MouseListener {
     }
     public void resetColor(){
         if(blanc) {
-            setBackground(Color.lightGray);
+            setBackground(new Color(255, 213, 135));
         }
-        else {setBackground(Color.BLACK);}
+        else {setBackground(new Color(104, 60, 23));}
         if(selectionnee)
             selectionnerCase();
         if(active)
@@ -107,6 +106,7 @@ public class Case extends JPanel implements MouseListener {
 
     public interface CaseEvent {
         void onClick(int[] pos);
+        void preSelect();
     }
 
     @Override
@@ -117,7 +117,10 @@ public class Case extends JPanel implements MouseListener {
             else{this.pion.selectionner();}
         }
         if(selectionnee){this.deselectionnerCase();}
-        else{this.selectionnerCase();}
+        else{
+            cListener.preSelect();
+            this.selectionnerCase();
+        }
         resetColor();
         int[] pos = {x,y};
         cListener.onClick(pos);

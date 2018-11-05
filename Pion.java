@@ -4,6 +4,9 @@ public class Pion {
     public String typePion;
     public boolean blanc;
     public boolean selectionne;
+    public static boolean displayToGUI;
+    public static String TYPE_PION = "pion";
+    public static String TYPE_DAME = "dame";
 
     /*
     typePion: mort, pion, dame
@@ -130,40 +133,50 @@ public class Pion {
     } */
 
     public String toString() {
-        if (System.getProperty("os.name").equals("Linux")) {
-            if (this.selectionne) {
-                return "@";
+        if(displayToGUI){
+            if (this.typePion.equals("pion")) {
+                return "◉";
             } else {
-                if (this.typePion.equals("pion")) {
-                    if (!blanc)
-                        return "◯";
-                    else
-                        return "◉";
-                } else {
-                    if (this.typePion.equals("dame")) { //une Dame
-                        if (!blanc)
-                            return "▢";
-                        else
-                            return "▣";
-                    } else return "x";
-                }
+                if (this.typePion.equals("dame")) { //une Dame
+                     return "▣";
+                } else return "x";
             }
         } else {
-            if (this.selectionne) {
-                return "@";
-            } else {
-                if (this.typePion.equals("pion")) {
-                    if (blanc)
-                        return "b";
-                    else
-                        return "n";
+            if (System.getProperty("os.name").equals("Linux")) {
+                if (this.selectionne) {
+                    return "@";
                 } else {
-                    if (this.typePion.equals("dame")) { //une Dame
-                        if (blanc)
-                            return "B";
+                    if (this.typePion.equals("pion")) {
+                        if (!blanc)
+                            return "◯";
                         else
-                            return "N";
-                    } else return "x";
+                            return "◉";
+                    } else {
+                        if (this.typePion.equals("dame")) { //une Dame
+                            if (!blanc)
+                                return "▢";
+                            else
+                                return "▣";
+                        } else return "x";
+                    }
+                }
+            } else {
+                if (this.selectionne) {
+                    return "@";
+                } else {
+                    if (this.typePion.equals("pion")) {
+                        if (blanc)
+                            return "b";
+                        else
+                            return "n";
+                    } else {
+                        if (this.typePion.equals("dame")) { //une Dame
+                            if (blanc)
+                                return "B";
+                            else
+                                return "N";
+                        } else return "x";
+                    }
                 }
             }
         }
@@ -255,5 +268,9 @@ public class Pion {
         if(pion.blanc==this.blanc)
             return true;
         else return false;
+    }
+
+    public static void setDisplayToGUI(boolean displayToGUI) {
+        Pion.displayToGUI = displayToGUI;
     }
 }

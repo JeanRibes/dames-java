@@ -21,6 +21,7 @@ public class SocketAPI {
     public boolean joueBlanc;
     public String couleur;
     public boolean spinner;
+    PionReceiver pListener;
 
     /**
      * @param server    URI Websocket de la forme ws://example.com ou wss://secure.com
@@ -51,6 +52,9 @@ public class SocketAPI {
                 SocketAPI.this.data = message;
                 try {
                     Pion[] pions = gson.fromJson(SocketAPI.this.data, Pion[].class);
+                    if(pListener instanceof PionReceiver && pListener!=null){
+                        pListener.receive(pions);
+                    }
                 } catch (JsonParseException e) {
                     System.out.println(SocketAPI.this.data);
                     SocketAPI.this.data = ""; //pour un chat tout dégeu et plutôt hacké
@@ -193,6 +197,13 @@ public class SocketAPI {
             System.out.print("\r[-]  [ <->     ] ");
             Thread.sleep(100);
         }
+    }
+
+    public interface PionReceiver {
+        void receive(Pion[] pions);
+    }
+    public void addPionListener(Object that) {
+        pListener = (PionReceiver) that;
     }
 }
 

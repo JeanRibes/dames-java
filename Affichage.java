@@ -9,13 +9,17 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
+public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, SocketAPI.PionReceiver {
     Pion[] mesPions;
     JPanel plateauPanel;
+    JPanel infos;
     Plateau plateau;
     Case selectionActive;
     JTextPane messagesErreur;
     static int counter=3;
+    static boolean joueBlanc;
+    static Color infosColor = new Color(123, 233, 255);
+    SocketAPI wsTransport;
 
     public Affichage(int taille) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -29,6 +33,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
 
         plateau = new Plateau(taille);
         mesPions  = LesDames.RemplirPlateau(plateau, 20);
+        Pion.setDisplayToGUI(true);
         plateau.update(mesPions);
         for(int y=0;y<plateau.cases.length; y++) {
             for (int x = 0; x < plateau.cases.length; x++) {
@@ -36,33 +41,6 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
                 plateauPanel.add(plateau.cases[y][x]);
             }
         }
-
-        /*pions = new JButton[taille][taille];
-        cases = new JPanel[taille][taille];
-        boolean doitEtreBlanc;
-        for (int y = 0; y < this.pions.length; y++) {
-            doitEtreBlanc = (y % 2 == 0);
-            for (int x = 0; x < this.pions[y].length; x++) {
-                pions[y][x] = new JButton();
-                pions[y][x].setSize(100,100);
-                cases[y][x] = new JPanel();
-                //cases[y][x].setLayout();
-                if (doitEtreBlanc) {
-                    cases[y][x].setBackground(Color.lightGray);
-                    pions[y][x].setBackground(Color.RED);
-                    doitEtreBlanc = false;
-                    pions[y][x].setText(x + "," + y);
-                } else {
-                    cases[y][x].setBackground(Color.BLACK);
-                    //pions[y][x].setForeground(Color.WHITE);
-                    doitEtreBlanc = true;
-                }
-                //pions[y][x].setHorizontalTextPosition(SwingConstants.CENTER);
-                //pions[y][x].setVerticalTextPosition(SwingConstants.CENTER);
-                cases[y][x].add(pions[y][x]);
-                plateauPanel.add(cases[y][x]);
-            }
-        }*/
         plateauPanel.setBorder(new EmptyBorder(10,10,10,10));
         JButton cancel = new JButton("Annuler");
         JPanel buttons = new JPanel();
@@ -82,10 +60,15 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
             else {
                 selectionActive = plateau.getCaseSelectionnee();
                 selectionActive.setActive(true);
-                messagesErreur.setText("Choisissez un pion à manger ou une case où aller");
+                afficherMessage("Choisissez un pion à manger ou une case où aller");
+                if(selectionActive.pion.blanc!=joueBlanc){
+                    afficherMessage("Jouez vos pions !");
+                    plateau.resetSelectionCases();
+                    desactiverSelection();
+                }
             }
         });
-        JPanel infos = new JPanel();
+        infos = new JPanel();
         messagesErreur = new JTextPane();
         messagesErreur.setEditable(false);
         infos.add(messagesErreur);
@@ -94,55 +77,67 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
         buttons.add(cancel, BorderLayout.CENTER);
         buttons.setBackground(new Color(28, 140, 107));
         plateauPanel.setBackground(new Color(255, 166, 18));
-        infos.setBackground(new Color(123, 233, 255));
+        infos.setBackground(infosColor);
         add(buttons, BorderLayout.SOUTH);
         add(plateauPanel, BorderLayout.CENTER);
         add(infos, BorderLayout.NORTH);
 
         addKeyListener(this);
         setVisible(true);
+        mesPions[mesPions.length-1].setTypePion(Pion.TYPE_DAME);
 
-        messagesErreur.setText("Cliquez sur un pion et appuyez sur Action pour continuer");
+        afficherMessage("Cliquez sur un pion et appuyez sur Action pour continuer");
+        try {
+            wsTransport = new SocketAPI("wss://api.ribes.me/tchat/room", "1", true);
+            wsTransport.addPionListener(this);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
-
-    /*public void setPion(Pion pion){
-        if(pion.blanc){pions[pion.getY()][pion.getX()].setForeground(Color.WHITE);}
-        else {pions[pion.getY()][pion.getX()].setForeground(Color.BLACK);}
-        pions[pion.getY()][pion.getX()].setText(pion.toString());
-    }
-*/
     @Override
     public void keyPressed(KeyEvent e) {
                 
     }public void keyTyped(KeyEvent e) {}public void keyReleased(KeyEvent e) {}
 
+    @Override
+    public void preSelect() {
+        plateau.resetSelectionCases();
+    }
 
     @Override
     public void onClick(int[] pos) {
-        plateau.update(mesPions);
+        //plateau.update(mesPions);
         if(selectionActive()) {
             if(!selectionActive.hasPion()) {
                 desactiverSelection();
-                messagesErreur.setText("Vous ne pouvez pas activer une case sans pion");
+                afficherMessage("Vous ne pouvez pas activer une case sans pion");
                 plateau.resetSelectionCases();
                 plateau.update(mesPions);return;
             }
             Pion actif = selectionActive.pion;
+            if(actif.blanc!=joueBlanc){
+                afficherMessage("Jouez vos pions !");
+                plateau.resetSelectionCases();
+                desactiverSelection();
+                return;
+            }
             if (plateau.estVide(pos)) {
                 if (selectionActive.pion.bouge(pos)) {
                     plateau.resetSelectionCases();
                     desactiverSelection();
                     plateau.update(mesPions);
-                }else messagesErreur.setText("Vous ne pouvez pas jouer ici, séléctionnez un autre pion ou case");
+                    passerTour();
+                }else afficherMessage("Vous ne pouvez pas jouer ici, séléctionnez un autre pion ou case");
             } else {
                 Pion cePion = plateau.getPionDepuisCase(pos);
                 if (actif.mange(cePion, plateau)) {
                     plateau.resetSelectionCases();
+                    plateau.update(mesPions);
                     if(plateau.peutIlManger(actif)){
-                        messagesErreur.setText("REJOUEZ !");
+                        afficherMessage("REJOUEZ !");
                         desactiverSelection();
-                    }
-                } else messagesErreur.setText("Vous ne pouvez pas manger ce pion");
+                    } else {passerTour();}
+                } else afficherMessage("Vous ne pouvez pas manger ce pion");
                 plateau.resetSelectionCases();
                 plateau.update(mesPions);
 
@@ -164,7 +159,6 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     }
 
     public void desactiverSelection() {
-        System.out.println("selection desactivée");
         try{
             selectionActive.setActive(false);
             selectionActive = null;
@@ -172,7 +166,9 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
     }
 
     public static void main(String[] args) throws IOException {
-        new Affichage(10);
+        /*new Thread(()->{
+            new MultiChat();
+        }).start();*/
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) { //merci StackOverflow
@@ -187,6 +183,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
                 }
             }
         }catch (Exception e) {}
+        new Affichage(10);
     }
     public void testFin(){
         if(LesDames.pionsVivants(mesPions) ==0) {
@@ -197,4 +194,39 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent {
             a.setVisible(true);
         }
     }
+
+    public static boolean joueBlanc() {
+        return joueBlanc;
+    }
+    public void aVousDeJouer(){
+        joueBlanc = !joueBlanc;
+        if(joueBlanc)
+            afficherMessage("Au tour des BLANCS");
+        else
+            afficherMessage("Au tour des NOIRS");
+    }
+    public void passerTour() {
+        //aVousDeJouer();
+        wsTransport.post(mesPions);
+    }
+
+    public void afficherMessage(String msg) {
+        messagesErreur.setText(msg);
+        infos.setBackground(Color.BLUE);
+        new Thread(()->{
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            infos.setBackground(infosColor);
+        }).start();
+    }
+    public void receive(Pion[] pions) {
+        mesPions = null;
+        mesPions = pions;
+        plateau.update(mesPions);
+        aVousDeJouer();
+    }
+
 }
