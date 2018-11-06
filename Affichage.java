@@ -21,7 +21,8 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, So
     static Color infosColor = new Color(123, 233, 255);
     SocketAPI wsTransport;
 
-    public Affichage(int taille) {
+    public Affichage(int taille, String server, String id, boolean joueurBlanc) {
+        Affichage.joueBlanc = joueurBlanc; // possesion initiale des pions
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Partie de dames");
         setSize(600, 665);
@@ -63,6 +64,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, So
                 afficherMessage("Choisissez un pion à manger ou une case où aller");
                 if(selectionActive.pion.blanc!=joueBlanc){
                     afficherMessage("Jouez vos pions !");
+                    System.out.println(selectionActive.pion+" "+selectionActive.pion.blanc);
                     plateau.resetSelectionCases();
                     desactiverSelection();
                 }
@@ -88,7 +90,7 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, So
 
         afficherMessage("Cliquez sur un pion et appuyez sur Action pour continuer");
         try {
-            wsTransport = new SocketAPI("wss://api.ribes.me/tchat/room", "1", true);
+            wsTransport = new SocketAPI(server, id, joueBlanc);
             wsTransport.addPionListener(this);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -115,12 +117,12 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, So
                 plateau.update(mesPions);return;
             }
             Pion actif = selectionActive.pion;
-            if(actif.blanc!=joueBlanc){
+            /*if(actif.blanc!=joueBlanc){
                 afficherMessage("Jouez vos pions !");
                 plateau.resetSelectionCases();
                 desactiverSelection();
                 return;
-            }
+            }*/
             if (plateau.estVide(pos)) {
                 if (selectionActive.pion.bouge(pos)) {
                     plateau.resetSelectionCases();
@@ -169,21 +171,12 @@ public class Affichage extends JFrame implements KeyListener, Case.CaseEvent, So
         /*new Thread(()->{
             new MultiChat();
         }).start();*/
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) { //merci StackOverflow
-                System.out.println(info.getClassName());
-                if ("javax.swing.plaf.nimbus.NimbusLookAndFeel".equals(info.getClassName())) { //le plus beau
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-                if ("com.sun.java.swing.plaf.gtk.GTKLookAndFeel".equals(info.getClassName())) { //y'a des problèmes avec les bordures c'est un peu moche
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        }catch (Exception e) {}
-        new Affichage(10);
+        Lobby.setupUiTheme();
+        if(args.length>0){
+            new Affichage(10, args[0]+"/tchat/room", "1", true);
+        }else {
+            new Affichage(10, "ws://5093937a.ngrok.io/tchat/room", "1", true);
+        }
     }
     public void testFin(){
         if(LesDames.pionsVivants(mesPions) ==0) {

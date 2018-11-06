@@ -43,7 +43,7 @@ public class SocketAPI {
         this.sync = new WebSocketClient(new URI(server + "/ws/sync/" + id + "/" + couleur)) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
-                //System.out.println("opened connection");
+                System.out.println("Connecté au serveur de jeu");
             }
 
             @Override
