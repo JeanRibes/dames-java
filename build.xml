@@ -37,7 +37,7 @@
 	    </archives>
 	  </restrict>
 	  <manifest>
-                <attribute name="Main-Class" value="Affichage"/>
+                <attribute name="Main-Class" value="Lobby"/>
 	  </manifest>
       </jar>
   </target>
